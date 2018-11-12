@@ -18,11 +18,9 @@ import lejos.robotics.SampleProvider;
  *
  */
 public class ArmController {
-	private static final double ARMLENGTH = 16.1;
-	private static final double MOTORHEIGHT = 8.5;
-	private static final double FIRSTLEVEL = 10.0;
-	private static final double SECONDLEVEL = 20.0;
-	private static final double AVGRINGRADIUS = 1.0;
+	private static final double BOTTOMTOFIRST = 10.0; //put correct value. distance the arm needs to cover from the bottom to the desired first level height 
+	private static final double FIRSTTOSECOND = 20.0; //put correct value. distance the arm needs to cover from the bottom to the desired second level from the first
+	private static final double SPOOLRADIUS = 1.0; //change
 	private static final int FORWARD_SPEED = 100;
 	private static double WHEELRADIUS;
 	private static double TRACK;
@@ -32,7 +30,7 @@ public class ArmController {
 	private EV3LargeRegulatedMotor rightMotor;
 
 	private RingColours ringColours;
-	
+
 	/**
 	 * Initializes motors and hardware constants
 	 * 
@@ -57,31 +55,28 @@ public class ArmController {
 	 */
 	public void run() {
 
-		int degreeMoved = moveArm(FIRSTLEVEL);
+		//create new ring detection object
+		ringColours = new RingColours(); //change place in code depending on when you want to activate light sensor.
+
+		moveArm(BOTTOMTOFIRST);
 
 		boolean firstLevelDetected = moveRobot();
 
 		//need to move arm to second level if first level has no ring
 		if(!firstLevelDetected) {
 
-			//rotate back to face tree
-			leftMotor.rotate(convertAngle(WHEELRADIUS, TRACK, 40.0), true);
-			rightMotor.rotate(-convertAngle(WHEELRADIUS, TRACK, 40.0), false);
-
-			//move back
-			leftMotor.rotate(convertDistance(WHEELRADIUS, 10), true);
-			rightMotor.rotate(convertDistance(WHEELRADIUS, 10), false);
-
-			armMotor.setSpeed(10.0F);
-			//move arm back to 0 deg
-			armMotor.rotate(-(degreeMoved+45)); //sign depends on the orientation of the motor. need to check
-
-			moveArm(SECONDLEVEL);
+			moveArm(FIRSTTOSECOND);
 
 			moveRobot(); //same process, ignore returned boolean
 
 		}
 
+	}
+
+	private void moveArm(double bottomtofirst2) {
+		armMotor.setSpeed(FORWARD_SPEED);
+		armMotor.rotate(convertDistance(SPOOLRADIUS, bottomtofirst2), false);
+		armMotor.stop();
 	}
 
 	/**
@@ -93,29 +88,23 @@ public class ArmController {
 		boolean firstLevelDetected = false;
 		leftMotor.setSpeed(FORWARD_SPEED);
 		rightMotor.setSpeed(FORWARD_SPEED);
-		
+
 		//advance robot to insert arm in ring hole
 		leftMotor.rotate(convertDistance(WHEELRADIUS, 10), true); 
 		rightMotor.rotate(convertDistance(WHEELRADIUS, 10), false);
 
-		//create new ring detection object
-		ringColours = new RingColours(); //change place in code depending on when you want to activate light sensor.
-
 		//dont know if this will work. want to let color sensor activate before continuing robot movement 
 		try {
-			TimeUnit.SECONDS.sleep(7);
+			TimeUnit.SECONDS.sleep(3);
 		}catch(InterruptedException e) {
-			
+
 		}
 
-		//rotate counter clockwise to unhook the ring from the tree
-		leftMotor.rotate(-convertAngle(WHEELRADIUS, TRACK, 40.0), true);
-		rightMotor.rotate(convertAngle(WHEELRADIUS, TRACK, 40.0), false);
-
-		//bring arm up quickly to allow captured ring to fall down
-		armMotor.setSpeed(130.0F);
-		armMotor.rotate(-45);
-		armMotor.stop();
+		leftMotor.setSpeed(FORWARD_SPEED/4);
+		rightMotor.setSpeed(FORWARD_SPEED/4);
+		//move robot back to retrieve arm
+		leftMotor.rotate(-convertDistance(WHEELRADIUS, 10), true); 
+		rightMotor.rotate(-convertDistance(WHEELRADIUS, 10), false);
 
 		//detect color and beep accordingly
 		if(ringColours.colourDetected("Red")) {
@@ -133,21 +122,6 @@ public class ArmController {
 		}
 
 		return firstLevelDetected;
-	}
-
-	/**
-	 * Uses trigonometry to move the arm to a precise height; either first or second ring level
-	 * @param level height in cm of the level
-	 * @return returns the degrees that the arm moved
-	 */
-	private int moveArm(double level) {
-		double a = FIRSTLEVEL - MOTORHEIGHT - AVGRINGRADIUS;
-		theta = Math.atan(a/ARMLENGTH);
-		int thetaInDeg = (int) (theta * (180/Math.PI));
-		armMotor.setSpeed(10.0F);
-		armMotor.rotate(-thetaInDeg); //sign depends on the orientation of the motor. need to check
-		armMotor.stop();
-		return thetaInDeg;
 	}
 
 	/**
