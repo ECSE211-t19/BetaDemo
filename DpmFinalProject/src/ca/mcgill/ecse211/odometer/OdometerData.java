@@ -150,6 +150,7 @@ public class OdometerData {
       this.x = x;
       this.y = y;
       this.theta = theta;
+      MainClass.gyroSensor.reset();
       isReseting = false; // Done reseting
       doneReseting.signalAll(); // Let the other threads know that you are
                                 // done reseting

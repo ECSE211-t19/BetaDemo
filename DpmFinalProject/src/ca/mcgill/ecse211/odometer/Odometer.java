@@ -122,6 +122,7 @@ public class Odometer extends OdometerData implements Runnable {
     long updateStart, updateEnd;
     prev_gyro_value = fetchGyroData();
     
+    
     while (true) {
     	updateStart = System.currentTimeMillis();
     		leftMotorTachoCount = leftMotor.getTachoCount();
@@ -140,8 +141,8 @@ public class Odometer extends OdometerData implements Runnable {
     		deltaD=0.5*(distL+distR);
     		//deltaT=(distL-distR)/TRACK; 
     		//Theta+=deltaT; 
-    		dX=deltaD*Math.sin(Theta); 
-    		dY=deltaD*Math.cos(Theta);
+    		dX=deltaD*Math.sin((super.getXYT()[2] * Math.PI) / 180.0); 
+    		dY=deltaD*Math.cos((super.getXYT()[2] * Math.PI) / 180.0);
     		X=X+dX;
     		Y=Y+dY;	
     		
@@ -215,7 +216,7 @@ public class Odometer extends OdometerData implements Runnable {
           Y = position[1];
  
           Theta = position[2];
-          odo.update(X, Y, Theta);
+          odo.setXYT(X, Y, Theta);
     }
   }
 

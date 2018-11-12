@@ -28,8 +28,8 @@ public class MainClass {
 	public static final EV3GyroSensor gyroSensor = new EV3GyroSensor(LocalEV3.get().getPort("S4"));
 
 	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
-	public static final double WHEEL_RAD = 2.13;
-	public static final double TRACK = 9.66;
+	public static final double WHEEL_RAD = 2.07;
+	public static final double TRACK = 10.5; //66
 	public Odometer odometer;
 
 	public static void main(String[] args) throws OdometerExceptions {
@@ -56,8 +56,8 @@ public class MainClass {
             lcd.drawString("< Left    |  Right >", 0, 0);
             lcd.drawString("          |         ", 0, 1);
             lcd.drawString(" Color    | Start   ", 0, 2);
-            lcd.drawString("Detection | Search   ", 0, 3);
-            lcd.drawString("          |          ", 0, 4);
+            lcd.drawString("Detection | Search  ", 0, 3);
+            lcd.drawString("          |         ", 0, 4);
 			
 			
 			buttonChoice = Button.waitForAnyPress();
@@ -81,7 +81,7 @@ public class MainClass {
 			usLocalizer.run();
 			lightLocalizer.run();
 			Sound.beep();
-			//go to start point
+			
 			
 			obstacleavoidance.run(); // run the obstacleAvoidance
 			

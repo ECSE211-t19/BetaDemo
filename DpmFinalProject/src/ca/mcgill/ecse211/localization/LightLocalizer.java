@@ -21,7 +21,7 @@ public class LightLocalizer implements Runnable {
 	private float light_value;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private static final int d = 12; // distance between the center of the robot and the light sensor
+	private static final double d = 13.1; // distance between the center of the robot and the light sensor
 	private static final double TILE_WIDTH = 30.48;
 	private double TRACK;
 	private double WHEEL_RAD;
@@ -84,7 +84,7 @@ public class LightLocalizer implements Runnable {
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		odoData.setY(d); // Correct Y
-		odoData.setTheta(0);
+		//odoData.setTheta(0);
 		// Turn 90 degrees
 		leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 90), true);
 		rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 90), false);
@@ -98,7 +98,7 @@ public class LightLocalizer implements Runnable {
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		odoData.setX(d);
-		odoData.setTheta(90);
+		//odoData.setTheta(90);
 
 		// Go backwards to the center of the line
 		leftMotor.rotate(convertDistance(WHEEL_RAD, -d), true);
@@ -116,14 +116,14 @@ public class LightLocalizer implements Runnable {
 		rightMotor.rotate(convertDistance(WHEEL_RAD, -d), false);
 		// leftMotor.stop(true);
 		// rightMotor.stop(false);
-		odoData.setTheta(0); // Robot is at the origin
+		//odoData.setTheta(270); // Robot is at the origin
 
 		// Sets the robot's position to {1,1}
-		double[] position = { TILE_WIDTH, TILE_WIDTH, 0 };
-		odoData.setPosition(position);
+		//double[] position = { 7 * TILE_WIDTH, TILE_WIDTH, 270 };
+		odoData.setXYT(7 * TILE_WIDTH, TILE_WIDTH, 270);
 
-		odoData.setX(TILE_WIDTH);
-		odoData.setY(TILE_WIDTH);
+		//odoData.setX(7 * TILE_WIDTH);
+		//odoData.setY(TILE_WIDTH);
 	}
 
 	/***

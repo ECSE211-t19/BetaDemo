@@ -74,7 +74,8 @@ public class UltrasonicLocalizer implements Runnable {
 	   */
 	public void doFallingEdge() {
 		// facing the wall at the start
-		double angle;
+		double angle1;
+		double angle2;
 		fetchUSData();
 		if (this.distance < 100) {
 			while (this.distance < 100) {
@@ -98,8 +99,8 @@ public class UltrasonicLocalizer implements Runnable {
 			}
 			leftMotor.stop(true);
 			rightMotor.stop(false);
-			odometer.setTheta(0);
-
+			angle1 = 360 - odometer.getXYT()[2];
+			
 			while (this.distance < 100) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
@@ -122,7 +123,7 @@ public class UltrasonicLocalizer implements Runnable {
 			leftMotor.stop(true);
 			rightMotor.stop(false);
 
-			angle = odometer.getXYT()[2];
+			angle2 = odometer.getXYT()[2];
 		} else {// facing away from the walls
 			while (this.distance > WALL_DISTANCE) {
 				leftMotor.setSpeed(ROTATION_SPEED);
@@ -134,7 +135,7 @@ public class UltrasonicLocalizer implements Runnable {
 			}
 			leftMotor.stop(true);
 			rightMotor.stop(false);
-			odometer.setTheta(0);
+			angle1 = 360 - odometer.getXYT()[2];
 
 			while (this.distance < 100) {
 				leftMotor.setSpeed(ROTATION_SPEED);
@@ -158,15 +159,15 @@ public class UltrasonicLocalizer implements Runnable {
 			leftMotor.stop(true);
 			rightMotor.stop(false);
 
-			angle = odometer.getXYT()[2];
+			angle2 = odometer.getXYT()[2];
 		}
-		leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + (angle / 2.0)), true);
-		rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + (angle / 2.0)), false);
+		leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), true);
+		rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), false);
 		
 		
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		odometer.setTheta(0);
+		//odometer.setTheta(0);
 	}
 
 	/***

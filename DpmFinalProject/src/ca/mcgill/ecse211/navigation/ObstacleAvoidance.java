@@ -6,8 +6,7 @@ import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.motor.EV3MediumRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.robotics.SampleProvider;
-import java.util.Map;
-import ca.mcgill.ecse211.WiFiClient.WifiConnection;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -44,14 +43,6 @@ public class ObstacleAvoidance implements Runnable {
 	private final String SEARCHCOLOR = "Yellow";
 	private int[] searchColorVal;
 
-	// ** Set these as appropriate for your team and current situation **
-	  private static final String SERVER_IP = "192.168.2.20";
-	  private static final int TEAM_NUMBER = 19;
-
-	  // Enable/disable printing of debug info from the WiFi class
-	  private static final boolean ENABLE_DEBUG_WIFI_PRINT = true;
-	
-	
 	private Map<String, int[]> colorMap = new HashMap<String, int[]>();
 	private int[] greenRing = { 52988, 115452, 15269, 13376, 26599, 1532 }; // Rm, Gm,Bm, Rsd, Gsd, Bsd values (times
 																			// 10^6 for each)
@@ -75,7 +66,16 @@ public class ObstacleAvoidance implements Runnable {
 	private int yt = 5;
 
 	// array list for points
-	private double[][] wayPoints = createWayPoints(xl, yl, xt, yt);
+	private double[][] wayPoints = {
+			{6 * TILE_WIDTH, TILE_WIDTH},
+			{6 * TILE_WIDTH, 2 * TILE_WIDTH}
+			//{7 * TILE_WIDTH, 2 * TILE_WIDTH}
+			/*{3 * TILE_WIDTH, 1 * TILE_WIDTH},
+			{ 3 * TILE_WIDTH, 7 * TILE_WIDTH},
+			{ 4 * TILE_WIDTH, 7 * TILE_WIDTH},
+			{ 7 * TILE_WIDTH, 1 * TILE_WIDTH},
+			{ 7 * TILE_WIDTH, 2 * TILE_WIDTH}*/
+	};
 
 	/***
 	 * Constructor
@@ -87,7 +87,7 @@ public class ObstacleAvoidance implements Runnable {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		odoData = OdometerData.getOdometerData();
-		odoData.setXYT(TILE_WIDTH, TILE_WIDTH, 0);
+		odoData.setXYT(0,0,0);
 
 		this.TRACK = TRACK;
 		this.WHEEL_RAD = WHEEL_RAD;
@@ -111,60 +111,6 @@ public class ObstacleAvoidance implements Runnable {
 	/***
 	 * This method iterates through the waypoints
 	 */
-	
-	
-	public void setCoordinates() {
-		
-
-		 
-
-		    System.out.println("Running..");
-
-		    // Initialize WifiConnection class
-		    WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
-
-		    // Connect to server and get the data, catching any errors that might occur
-		    try {
-		      /*
-		       * getData() will connect to the server and wait until the user/TA presses the "Start" button
-		       * in the GUI on their laptop with the data filled in. Once it's waiting, you can kill it by
-		       * pressing the upper left hand corner button (back/escape) on the EV3. getData() will throw
-		       * exceptions if it can't connect to the server (e.g. wrong IP address, server not running on
-		       * laptop, not connected to WiFi router, etc.). It will also throw an exception if it connects
-		       * but receives corrupted data or a message from the server saying something went wrong. For
-		       * example, if TEAM_NUMBER is set to 1 above but the server expects teams 17 and 5, this robot
-		       * will receive a message saying an invalid team number was specified and getData() will throw
-		       * an exception letting you know.
-		       */
-		      Map data = conn.getData();
-
-		      // Example 1: Print out all received data
-		      System.out.println("Map:\n" + data);
-
-		      // Example 2 : Print out specific values
-		      int redTeam = ((Long) data.get("RedTeam")).intValue();
-		      System.out.println("Red Team: " + redTeam);
-
-		      int TR_x = ((Long) data.get("TR_x")).intValue();
-		      System.out.println("X component of the red ring tree: " + TR_x);
-
-		      // Example 3: Compare value
-		      int tn_ll_x =  ((Long) data.get("TNR_LL_x")).intValue();
-		      if (tn_ll_x < 5) {
-		        System.out.println("Red Tunnel LL corner X < 5");
-		      }
-		      else {
-		        System.out.println("Red Tunnel LL corner X >= 5");
-		      }
-
-		    } catch (Exception e) {
-		      System.err.println("Error: " + e.getMessage());
-		    }
-
-		    // Wait until user decides to end program
-		    Button.waitForAnyPress();
-		  }
-	
 	public void run() {
 		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
 			motor.stop();
@@ -177,17 +123,31 @@ public class ObstacleAvoidance implements Runnable {
 			// there is nothing to be done here because it is not expected that
 			// the odometer will be interrupted by another thread
 		}
-		/////////////////////////////////////////////////////////////WifiClass///////////////////////////////////////////////////////////
 		
 		
-		
-		
-		
-		////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		odometer.setX(TILE_WIDTH);
+		odometer.setX(7 * TILE_WIDTH);
 		odometer.setY(TILE_WIDTH);
-		odometer.setTheta(0);
-
+		odometer.setTheta(270);
+		//System.out.println("\n\n\n" + odometer.getXYT()[2] + "\n" + odometer.fetchGyroData());
+		
+		//Sound.beep();
+//		try {
+//			Thread.sleep(2500);
+//		} catch (InterruptedException e) {
+//		}
+//		leftMotor.setSpeed(ROTATE_SPEED);
+//		rightMotor.setSpeed(ROTATE_SPEED);
+		//leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 360), true);
+		//rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 360), false);
+		
+//		leftMotor.setSpeed(150);
+//		rightMotor.setSpeed(150);
+//		travelTo(TILE_WIDTH, TILE_WIDTH);
+		
+//		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 360), true);
+//		rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 360), false);
+		
+		
 		// implemented this for loop so that navigation will work for any number of
 		// points
 		// already at point 0, so iterator starts at 1
@@ -195,8 +155,8 @@ public class ObstacleAvoidance implements Runnable {
 
 			if (keepLooking == false) {
 				while (true) {
-					if (Math.abs(odometer.getXYT()[0] - (xt * TILE_WIDTH)) < 5
-							&& Math.abs(odometer.getXYT()[1] - (yt * TILE_WIDTH)) < 5) {
+					if (Math.abs(odometer.getXYT()[0] - (6 * TILE_WIDTH)) < 5
+							&& Math.abs(odometer.getXYT()[1] - (2 * TILE_WIDTH)) < 5) {
 						break;
 					}
 
@@ -211,9 +171,10 @@ public class ObstacleAvoidance implements Runnable {
 				iterator++;
 			}
 		}
-
+		
 	}
-
+	
+	
 	/***
 	 * This makes the robot move forward
 	 * 
@@ -254,6 +215,7 @@ public class ObstacleAvoidance implements Runnable {
 		}
 
 		double differenceInTheta = (dt * 180 / Math.PI - currentT); // robot has to turn "differenceInTheta",
+		//double differenceInTheta = (currentT - dt * 180 / Math.PI);
 		// turn the robot to the desired direction
 		turnTo(differenceInTheta);
 
@@ -261,8 +223,11 @@ public class ObstacleAvoidance implements Runnable {
 		leftMotor.setSpeed(FORWARD_SPEED);
 		rightMotor.setSpeed(FORWARD_SPEED);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), true);
-		rightMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), true);
-
+		//rightMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), true);
+		
+		rightMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), false);
+		
+		/*
 		while (isNavigating()) { // avoiding the obstacles
 			usDistance.fetchSample(usData, 0);
 			float distance = usData[0] * 100;
@@ -309,7 +274,8 @@ public class ObstacleAvoidance implements Runnable {
 			}
 
 		}
-
+		
+		*/
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 	}
