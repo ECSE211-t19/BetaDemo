@@ -73,9 +73,9 @@ public class ArmController {
 
 	}
 
-	private void moveArm(double bottomtofirst2) {
+	private void moveArm(double level) {
 		armMotor.setSpeed(FORWARD_SPEED);
-		armMotor.rotate(convertDistance(SPOOLRADIUS, bottomtofirst2), false);
+		armMotor.rotate(convertDistance(SPOOLRADIUS, level), false);
 		armMotor.stop();
 	}
 
