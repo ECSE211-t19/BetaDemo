@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import ca.mcgill.ecse211.odometer.*;
+import ca.mcgill.ecse211.wifi.Wifi;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 
@@ -42,6 +43,7 @@ public class ObstacleAvoidance implements Runnable {
 	private float[] color_samples;
 	private final String SEARCHCOLOR = "Yellow";
 	private int[] searchColorVal;
+	Wifi wifi;
 
 	private Map<String, int[]> colorMap = new HashMap<String, int[]>();
 	private int[] greenRing = { 52988, 115452, 15269, 13376, 26599, 1532 }; // Rm, Gm,Bm, Rsd, Gsd, Bsd values (times
@@ -49,6 +51,12 @@ public class ObstacleAvoidance implements Runnable {
 	private int[] orangeRing = { 111483, 36549, 7096, 17996, 6088, 999 };
 	private int[] blueRing = { 26097, 119187, 79725, 7591, 25473, 8012 };
 	private int[] yellowRing = { 148692, 107749, 18901, 35384, 23879, 1561 };
+	
+	int StartingCorner;
+	int[] StartXY;
+	int tunnel[][];
+	int SearchZone[][];
+	int tree[];
 
 	// under demo conditions
 	private int[] greenRing_1 = { 63283, 143777, 14267, 12707, 24629, 4062 };
@@ -63,26 +71,14 @@ public class ObstacleAvoidance implements Runnable {
 
 
 	// array list for points
-	private double[][] wayPoints = {
-//			{6 * TILE_WIDTH, TILE_WIDTH}
-//			{6 * TILE_WIDTH, 2 * TILE_WIDTH}
-//			{7 * TILE_WIDTH, 2 * TILE_WIDTH}
-			
-			
-			
-			{ 2.5 * TILE_WIDTH, 1 * TILE_WIDTH},
-			{ 2.5 * TILE_WIDTH, 2.5 * TILE_WIDTH},
-			{ 2.5 * TILE_WIDTH, 7 * TILE_WIDTH},
-			{ 4 * TILE_WIDTH, 7 * TILE_WIDTH}
-//			{ 7 * TILE_WIDTH, 2 * TILE_WIDTH}
-	};
-
+//	
 	/***
 	 * Constructor
+	 * @param wifi 
 	 * 
 	 */
 	public ObstacleAvoidance(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, final double TRACK,
-			final double WHEEL_RAD) throws OdometerExceptions { // constructor
+			final double WHEEL_RAD, Wifi wifi) throws OdometerExceptions { // constructor
 		this.odometer = Odometer.getOdometer();
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
@@ -95,11 +91,16 @@ public class ObstacleAvoidance implements Runnable {
 		SensorModes usSensor = MainClass.usSensor; // usSensor is the instance
 		this.usDistance = usSensor.getMode("Distance"); // usDistance provides samples from this instance
 		this.usData = new float[usDistance.sampleSize()]; // usData is the buffer in which data are returned
-		
+		this.wifi = wifi;
 		SensorModes ringSensor = MainClass.ringSensor;
 		this.ring_color_sample_provider = ringSensor.getMode("RGB");
 		this.color_samples = new float[ring_color_sample_provider.sampleSize()]; // ring sensor
-		 
+		this.StartingCorner = wifi.getStartingCorner();
+		this.StartXY = wifi.getStartingCornerCoords();
+		this.tunnel = wifi.getTunnel();
+		this.tree = wifi.getRingSet();
+		
+		
 		colorMap.put("Green", greenRing_1);
 		colorMap.put("Orange", orangeRing_1);
 		colorMap.put("Blue", blueRing_1);
@@ -116,6 +117,14 @@ public class ObstacleAvoidance implements Runnable {
 			motor.stop();
 			motor.setAcceleration(250); // reduced the acceleration to make it smooth
 		}
+		
+		double wayPoints[][] = {
+				
+				{ (tunnel[1][0] + 0.5) * TILE_WIDTH, 1 * TILE_WIDTH},
+				{ (tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH},
+				{ (tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[2][1] + 1) * TILE_WIDTH},
+				{ (tree[0] + 1) * TILE_WIDTH, tree[1] * TILE_WIDTH}
+		};
 		// wait 5 seconds
 		try {
 			Thread.sleep(2000);
@@ -128,24 +137,6 @@ public class ObstacleAvoidance implements Runnable {
 		odometer.setX(7 * TILE_WIDTH);
 		odometer.setY(TILE_WIDTH);
 		odometer.setTheta(270);
-		//System.out.println("\n\n\n" + odometer.getXYT()[2] + "\n" + odometer.fetchGyroData());
-		
-		//Sound.beep();
-//		try {
-//			Thread.sleep(2500);
-//		} catch (InterruptedException e) {
-//		}
-//		leftMotor.setSpeed(ROTATE_SPEED);
-//		rightMotor.setSpeed(ROTATE_SPEED);
-		//leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 360), true);
-		//rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 360), false);
-		
-//		leftMotor.setSpeed(150);
-//		rightMotor.setSpeed(150);
-//		travelTo(TILE_WIDTH, TILE_WIDTH);
-		
-//		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 360), true);
-//		rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 360), false);
 		
 		
 		// implemented this for loop so that navigation will work for any number of

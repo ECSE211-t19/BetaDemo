@@ -6,6 +6,7 @@ import ca.mcgill.ecse211.localization.LightLocalizer;
 import ca.mcgill.ecse211.localization.UltrasonicLocalizer;
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.ringCapture.ArmController;
+import ca.mcgill.ecse211.wifi.Wifi;
 import lejos.hardware.Button;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
@@ -33,7 +34,7 @@ public class MainClass {
 
 	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
 	public static final double WHEEL_RAD = 2.07;
-	public static final double TRACK = 10.5; //66
+	public static final double TRACK = 10.7; //66
 	public Odometer odometer;
 	public static ArmController armController;
 	public static ObstacleAvoidance obstacleAvoidance;
@@ -52,56 +53,56 @@ public class MainClass {
 
 		LightLocalizer lightLocalizer = new LightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 		
-		obstacleAvoidance = new ObstacleAvoidance(leftMotor, rightMotor, TRACK, WHEEL_RAD);
-		
-		FinalLightLocalizer lightLocalizer2 = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
-		
+		//FinalLightLocalizer lightLocalizer2 = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
+		Wifi wifi = new Wifi();
+		obstacleAvoidance = new ObstacleAvoidance(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
 		
-		do {
+		//do {
 			// clear the display
 			lcd.clear();
 			
-			// ask the user whether the motors should drive in a square or float
-            lcd.drawString("< Left    |  Right >", 0, 0);
-            lcd.drawString("          |         ", 0, 1);
-            lcd.drawString(" Color    | Start   ", 0, 2);
-            lcd.drawString("Detection | Search  ", 0, 3);
+////			// ask the user whether the motors should drive in a square or float
+          lcd.drawString("< Left    |  Right >", 0, 0);
+          lcd.drawString("          |         ", 0, 1);
+           lcd.drawString(" Color    | Start   ", 0, 2);
+           lcd.drawString("Detection | Search  ", 0, 3);
             lcd.drawString("          |         ", 0, 4);
+//			
 			
-			
-			buttonChoice = Button.waitForAnyPress();
-		} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
+			//buttonChoice = Button.waitForAnyPress();
+		//} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
 		
-		if (buttonChoice == Button.ID_LEFT)
+		/*if (buttonChoice == Button.ID_LEFT)
 		{
 			Thread colorThread = new Thread(colorDisplay);
 			colorThread.start();
 		}
 		else
 		{
-
+*/
 			// Start odometer and display threads
 			Thread odoThread = new Thread(odometer);
 			odoThread.start();
 			Thread odoDisplayThread = new Thread(odometryDisplay);
 			odoDisplayThread.start();
 			
+			//wifi.getMapData();
 			//armController.run();
 			usLocalizer.run();
 			
 			//lightLocalizer2.run();
 			
 			
-			//lightLocalizer.run();
+			lightLocalizer.run();
 			Sound.beep();
 //			
 //			
-			//obstacleAvoidance.run(); // run the obstacleAvoidance
-			//armController.run();
+			obstacleAvoidance.run(); // run the obstacleAvoidance
+			armController.run();
 
 			
-		}
+		//}
 		
 
 		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
