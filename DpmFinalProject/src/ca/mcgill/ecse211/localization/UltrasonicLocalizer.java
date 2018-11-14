@@ -3,6 +3,7 @@ package ca.mcgill.ecse211.localization;
 import ca.mcgill.ecse211.navigation.MainClass;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
+import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
@@ -77,8 +78,8 @@ public class UltrasonicLocalizer implements Runnable {
 		double angle1;
 		double angle2;
 		fetchUSData();
-		if (this.distance < 100) {
-			while (this.distance < 100) {
+		if (this.distance < 70) {
+			while (this.distance < 70) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.backward();
@@ -89,19 +90,23 @@ public class UltrasonicLocalizer implements Runnable {
 			leftMotor.stop(true);
 			rightMotor.stop(false);
 
-			while (this.distance > WALL_DISTANCE) {
-				leftMotor.setSpeed(ROTATION_SPEED);
-				rightMotor.setSpeed(ROTATION_SPEED);
-				leftMotor.backward();
-				rightMotor.forward();
-
-				fetchUSData();
-			}
-			leftMotor.stop(true);
-			rightMotor.stop(false);
-			angle1 = 360 - odometer.getXYT()[2];
 			
-			while (this.distance < 100) {
+			
+			while (this.distance > WALL_DISTANCE) {
+				leftMotor.setSpeed(ROTATION_SPEED);
+				rightMotor.setSpeed(ROTATION_SPEED);
+				leftMotor.backward();
+				rightMotor.forward();
+
+				fetchUSData();
+			}
+			Sound.beep();
+			leftMotor.stop(true);
+			rightMotor.stop(false);
+			
+			angle1 = odometer.getXYT()[2];
+			
+			while (this.distance < 70) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.forward();
@@ -109,6 +114,7 @@ public class UltrasonicLocalizer implements Runnable {
 
 				fetchUSData();
 			}
+			Sound.beep();
 			leftMotor.stop(true);
 			rightMotor.stop(false);
 
@@ -120,10 +126,16 @@ public class UltrasonicLocalizer implements Runnable {
 
 				fetchUSData();
 			}
+			Sound.beep();
 			leftMotor.stop(true);
 			rightMotor.stop(false);
-
+			
 			angle2 = odometer.getXYT()[2];
+
+			
+			leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle2 -  angle1) / 2.0)), true);
+			rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle2 -  angle1) / 2.0)), false);
+			
 		} else {// facing away from the walls
 			while (this.distance > WALL_DISTANCE) {
 				leftMotor.setSpeed(ROTATION_SPEED);
@@ -133,11 +145,12 @@ public class UltrasonicLocalizer implements Runnable {
 
 				fetchUSData();
 			}
+			Sound.beep();
 			leftMotor.stop(true);
 			rightMotor.stop(false);
 			angle1 = 360 - odometer.getXYT()[2];
 
-			while (this.distance < 100) {
+			while (this.distance < 70) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.forward();
@@ -156,14 +169,21 @@ public class UltrasonicLocalizer implements Runnable {
 
 				fetchUSData();
 			}
+			Sound.beep();
 			leftMotor.stop(true);
 			rightMotor.stop(false);
 
 			angle2 = odometer.getXYT()[2];
+			
+			leftMotor.setSpeed(ROTATION_SPEED);
+			rightMotor.setSpeed(ROTATION_SPEED);
+			leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), true);
+			rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), false);
+			
 		}
-		leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), true);
-		rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), false);
-		
+//		leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), true);
+//		rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), false);
+//		
 		
 		leftMotor.stop(true);
 		rightMotor.stop(false);

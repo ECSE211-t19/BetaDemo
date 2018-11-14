@@ -59,22 +59,22 @@ public class ObstacleAvoidance implements Runnable {
 	private int redS, greenS, blueS;
 	private boolean keepLooking = true;
 
-	// starting and ending coordinates
-	private int xl = 2;
-	private int yl = 2;
-	private int xt = 5;
-	private int yt = 5;
+	// coordinates
+
 
 	// array list for points
 	private double[][] wayPoints = {
-			{6 * TILE_WIDTH, TILE_WIDTH},
-			{6 * TILE_WIDTH, 2 * TILE_WIDTH}
-			//{7 * TILE_WIDTH, 2 * TILE_WIDTH}
-			/*{3 * TILE_WIDTH, 1 * TILE_WIDTH},
-			{ 3 * TILE_WIDTH, 7 * TILE_WIDTH},
-			{ 4 * TILE_WIDTH, 7 * TILE_WIDTH},
-			{ 7 * TILE_WIDTH, 1 * TILE_WIDTH},
-			{ 7 * TILE_WIDTH, 2 * TILE_WIDTH}*/
+//			{6 * TILE_WIDTH, TILE_WIDTH}
+//			{6 * TILE_WIDTH, 2 * TILE_WIDTH}
+//			{7 * TILE_WIDTH, 2 * TILE_WIDTH}
+			
+			
+			
+			{ 2.5 * TILE_WIDTH, 1 * TILE_WIDTH},
+			{ 2.5 * TILE_WIDTH, 2.5 * TILE_WIDTH},
+			{ 2.5 * TILE_WIDTH, 7 * TILE_WIDTH},
+			{ 4 * TILE_WIDTH, 7 * TILE_WIDTH}
+//			{ 7 * TILE_WIDTH, 2 * TILE_WIDTH}
 	};
 
 	/***
@@ -95,11 +95,11 @@ public class ObstacleAvoidance implements Runnable {
 		SensorModes usSensor = MainClass.usSensor; // usSensor is the instance
 		this.usDistance = usSensor.getMode("Distance"); // usDistance provides samples from this instance
 		this.usData = new float[usDistance.sampleSize()]; // usData is the buffer in which data are returned
-
+		
 		SensorModes ringSensor = MainClass.ringSensor;
 		this.ring_color_sample_provider = ringSensor.getMode("RGB");
 		this.color_samples = new float[ring_color_sample_provider.sampleSize()]; // ring sensor
-
+		 
 		colorMap.put("Green", greenRing_1);
 		colorMap.put("Orange", orangeRing_1);
 		colorMap.put("Blue", blueRing_1);
@@ -155,22 +155,27 @@ public class ObstacleAvoidance implements Runnable {
 
 			if (keepLooking == false) {
 				while (true) {
-					if (Math.abs(odometer.getXYT()[0] - (6 * TILE_WIDTH)) < 5
-							&& Math.abs(odometer.getXYT()[1] - (2 * TILE_WIDTH)) < 5) {
+					if (Math.abs(odometer.getXYT()[0] - (4 * TILE_WIDTH)) < 5
+							&& Math.abs(odometer.getXYT()[1] - (7 * TILE_WIDTH)) < 5) {
 						break;
 					}
 
-					travelTo(wayPoints[wayPoints.length - 1][0], wayPoints[wayPoints.length - 1][1]);
+					travelTo(wayPoints[wayPoints.length - 1][0], wayPoints[wayPoints.length - 1][1], FORWARD_SPEED, ROTATE_SPEED);
 				}
 
 				break;
 			}
 
 			else {
-				travelTo(wayPoints[iterator][0], wayPoints[iterator][1]);
+				travelTo(wayPoints[iterator][0], wayPoints[iterator][1], FORWARD_SPEED, ROTATE_SPEED);
 				iterator++;
 			}
 		}
+		
+		leftMotor.setSpeed(FORWARD_SPEED);
+		rightMotor.setSpeed(FORWARD_SPEED);
+		leftMotor.rotate(-convertDistance(WHEEL_RAD, 8), true);
+		rightMotor.rotate(-convertDistance(WHEEL_RAD, 8), false);
 		
 	}
 	
@@ -197,7 +202,7 @@ public class ObstacleAvoidance implements Runnable {
 	 * @param x,
 	 *            y
 	 */
-	void travelTo(double x, double y) {
+	public void travelTo(double x, double y, int forwardSpeed, int turnSpeed) {
 		// boolean keepLooking = true;
 		currentX = odometer.getXYT()[0];// get the position on the board
 		currentY = odometer.getXYT()[1];
@@ -217,11 +222,11 @@ public class ObstacleAvoidance implements Runnable {
 		double differenceInTheta = (dt * 180 / Math.PI - currentT); // robot has to turn "differenceInTheta",
 		//double differenceInTheta = (currentT - dt * 180 / Math.PI);
 		// turn the robot to the desired direction
-		turnTo(differenceInTheta);
+		turnTo(differenceInTheta, turnSpeed);
 
 		// drive forward required distance
-		leftMotor.setSpeed(FORWARD_SPEED);
-		rightMotor.setSpeed(FORWARD_SPEED);
+		leftMotor.setSpeed(forwardSpeed);
+		rightMotor.setSpeed(forwardSpeed);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), true);
 		//rightMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), true);
 		
@@ -316,22 +321,22 @@ public class ObstacleAvoidance implements Runnable {
 	 * 
 	 * @param theta
 	 */
-	void turnTo(double theta) {
+	void turnTo(double theta, int speed) {
 		if (theta > 180) { // angle convention. the robot should turn in direction
 			theta = 360 - theta;
-			leftMotor.setSpeed(ROTATE_SPEED);
-			rightMotor.setSpeed(ROTATE_SPEED);
+			leftMotor.setSpeed(speed);
+			rightMotor.setSpeed(speed);
 			leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, theta), true);
 			rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, theta), false);
 		} else if (theta < -180) {
 			theta = 360 + theta;
-			leftMotor.setSpeed(ROTATE_SPEED);
-			rightMotor.setSpeed(ROTATE_SPEED);
+			leftMotor.setSpeed(speed);
+			rightMotor.setSpeed(speed);
 			leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, theta), true);
 			rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, theta), false);
 		} else {
-			leftMotor.setSpeed(ROTATE_SPEED);
-			rightMotor.setSpeed(ROTATE_SPEED);
+			leftMotor.setSpeed(speed);
+			rightMotor.setSpeed(speed);
 			leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, theta), true);
 			rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, theta), false);
 		}

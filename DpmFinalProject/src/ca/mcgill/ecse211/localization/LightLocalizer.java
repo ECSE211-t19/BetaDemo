@@ -65,8 +65,8 @@ public class LightLocalizer implements Runnable {
 		}
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		leftMotor.setSpeed(130);
-		rightMotor.setSpeed(130);
+		leftMotor.setSpeed(150);
+		rightMotor.setSpeed(150);
 
 		do_localization();
 	}
@@ -83,7 +83,7 @@ public class LightLocalizer implements Runnable {
 		}
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		odoData.setY(d); // Correct Y
+		//odoData.setY(d); // Correct Y
 		//odoData.setTheta(0);
 		// Turn 90 degrees
 		leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 90), true);
@@ -97,7 +97,7 @@ public class LightLocalizer implements Runnable {
 		}
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		odoData.setX(d);
+		//odoData.setX(d);
 		//odoData.setTheta(90);
 
 		// Go backwards to the center of the line

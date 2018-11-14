@@ -18,8 +18,8 @@ import lejos.robotics.SampleProvider;
  *
  */
 public class ArmController {
-	private static final double BOTTOMTOFIRST = 10.0; //put correct value. distance the arm needs to cover from the bottom to the desired first level height 
-	private static final double FIRSTTOSECOND = 20.0; //put correct value. distance the arm needs to cover from the bottom to the desired second level from the first
+	private static final double BOTTOMTOFIRST = 0; //put correct value. distance the arm needs to cover from the bottom to the desired first level height 
+	private static final double FIRSTTOSECOND = 8.5; //put correct value. distance the arm needs to cover from the bottom to the desired second level from the first
 	private static final double SPOOLRADIUS = 1.0; //change
 	private static final int FORWARD_SPEED = 100;
 	private static double WHEELRADIUS;
@@ -47,7 +47,7 @@ public class ArmController {
 		this.rightMotor = rightMotor;
 		WHEELRADIUS = wheelRadius;
 		TRACK = track;
-		this.armMotor.stop();
+		
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class ArmController {
 
 	private void moveArm(double level) {
 		armMotor.setSpeed(FORWARD_SPEED);
-		armMotor.rotate(convertDistance(SPOOLRADIUS, level), false);
+		armMotor.rotate(-convertDistance(SPOOLRADIUS, level), false);
 		armMotor.stop();
 	}
 
@@ -90,8 +90,8 @@ public class ArmController {
 		rightMotor.setSpeed(FORWARD_SPEED);
 
 		//advance robot to insert arm in ring hole
-		leftMotor.rotate(convertDistance(WHEELRADIUS, 10), true); 
-		rightMotor.rotate(convertDistance(WHEELRADIUS, 10), false);
+		leftMotor.rotate(convertDistance(WHEELRADIUS, 12), true); 
+		rightMotor.rotate(convertDistance(WHEELRADIUS, 12), false);
 
 		//dont know if this will work. want to let color sensor activate before continuing robot movement 
 		try {
@@ -100,27 +100,37 @@ public class ArmController {
 
 		}
 
-		leftMotor.setSpeed(FORWARD_SPEED/4);
-		rightMotor.setSpeed(FORWARD_SPEED/4);
+		leftMotor.setSpeed(FORWARD_SPEED/3);
+		rightMotor.setSpeed(FORWARD_SPEED/3);
 		//move robot back to retrieve arm
-		leftMotor.rotate(-convertDistance(WHEELRADIUS, 10), true); 
-		rightMotor.rotate(-convertDistance(WHEELRADIUS, 10), false);
+		leftMotor.rotate(-convertDistance(WHEELRADIUS, 12), true); 
+		rightMotor.rotate(-convertDistance(WHEELRADIUS, 12), false);
 
-		//detect color and beep accordingly
-		if(ringColours.colourDetected("Red")) {
-			beep(4);
-			firstLevelDetected = true;
-		}else if(ringColours.colourDetected("Blue")) {
-			beep(1);
-			firstLevelDetected = true;
-		}else if(ringColours.colourDetected("Green")) {
-			beep(2);
-			firstLevelDetected = true;
-		}else if(ringColours.colourDetected("Yellow")) {
-			beep(3);
-			firstLevelDetected = true;
+		for (int i = 0; i < 7; i ++)
+		{
+			//detect color and beep accordingly
+			if(ringColours.colourDetected("Orange")) {
+				beep(4);
+				firstLevelDetected = true;
+				break;
+			}else if(ringColours.colourDetected("Blue")) {
+				beep(1);
+				firstLevelDetected = true;
+				break;
+			}else if(ringColours.colourDetected("Yellow")) {
+				beep(3);
+				firstLevelDetected = true;
+				break;
+			}
+			else if(ringColours.colourDetected("Green")) {
+				beep(2);
+				firstLevelDetected = true;
+				break;
+			}
+			
 		}
-
+		
+		Sound.beepSequenceUp();
 		return firstLevelDetected;
 	}
 

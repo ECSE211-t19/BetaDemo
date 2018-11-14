@@ -3,6 +3,7 @@ package ca.mcgill.ecse211.ringCapture;
 import java.util.HashMap;
 import java.util.Map;
 
+import ca.mcgill.ecse211.navigation.MainClass;
 import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3ColorSensor;
@@ -11,7 +12,7 @@ import lejos.robotics.SampleProvider;
 
 public class RingColours {
 	
-	private static final Port csPort = LocalEV3.get().getPort("S1"); //change to proper port
+	//private static final Port csPort = LocalEV3.get().getPort("S3"); //change to proper port
 	
 	private SampleProvider ring_color_sample_provider;
 	private float[] color_samples;
@@ -29,7 +30,8 @@ public class RingColours {
 	 * Create new color sensor and assign keys to the colorMap
 	 */
 	public RingColours() {
-		SensorModes ColorSensor = new EV3ColorSensor(csPort);
+		
+		SensorModes ColorSensor = MainClass.ringSensor;
 		ring_color_sample_provider = ColorSensor.getMode("RGB");
 		this.color_samples = new float[ring_color_sample_provider.sampleSize()];
 		colorMap.put("Green", greenRing);
@@ -59,13 +61,13 @@ public class RingColours {
 		
 		int[] searchColorVal = colorMap.get(colour);
 		
-		if (Math.abs(searchColorVal[0] - this.redS) <= (int) (3 * searchColorVal[3]) &&
-				Math.abs(searchColorVal[1] - this.greenS) <= (int) (3 * searchColorVal[4]) &&
-				Math.abs(searchColorVal[2] - this.blueS) <= (int) (3 * searchColorVal[5]))
+		if (Math.abs(searchColorVal[0] - this.redS) <= (int) (2 * searchColorVal[3]) &&
+				Math.abs(searchColorVal[1] - this.greenS) <= (int) (2 * searchColorVal[4]) &&
+				Math.abs(searchColorVal[2] - this.blueS) <= (int) (2 * searchColorVal[5]))
 			{
-				return false;
-			}else {
 				return true;
+			}else {
+				return false;
 			}
 	}
 }

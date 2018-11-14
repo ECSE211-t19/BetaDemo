@@ -21,9 +21,9 @@ public class FinalLightLocalizer implements Runnable {
 	private float light_value;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private static final int d = 17; // distance between the center of the robot and the light sensor
+	private static final double d = 10.5; // distance between the center of the robot and the light sensor
 	private static final double TILE_WIDTH = 30.48;
-	private static final int ROTATE_SPEED = 200;
+	private static final int ROTATE_SPEED = 100;
 	private double TRACK;
 	private double WHEEL_RAD;
 	private Odometer odoData;
@@ -32,6 +32,7 @@ public class FinalLightLocalizer implements Runnable {
 	private int startCorner;
 	private double dX;
 	private double dY;
+	private float first, second, third, fourth;
 
 	/***
 	 * Constructor
@@ -44,7 +45,7 @@ public class FinalLightLocalizer implements Runnable {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		EV3ColorSensor colour_sensor = MainClass.lineSensor;
-		this.color_sample_provider = colour_sensor.getMode("Red");
+		this.color_sample_provider = colour_sensor.getMode("ColorID");
 		this.color_samples = new float[colour_sensor.sampleSize()];
 		this.TRACK = TRACK;
 		this.WHEEL_RAD = WHEEL_RAD;
@@ -75,6 +76,7 @@ public class FinalLightLocalizer implements Runnable {
 	 * 
 	 */
 	public void do_localization() {
+		odoData.setTheta(0);
 		int numberLines = 0;
 		double[] angles = new double[4];
 		boolean line = false;
@@ -89,20 +91,22 @@ public class FinalLightLocalizer implements Runnable {
 		//prev_red = fetchUSData();
 		while (numberLines < 4) {
 			curr_red = fetchUSData();
-
 			
-			
-			if ((curr_red < 20)) {
+			if ( prev_red - curr_red > 3.5) {
 				
-				angles[numberLines] = odoData.getAng();
+				angles[numberLines] = odoData.getXYT()[2];
 				//System.out.println(prev_red);
-				System.out.println(curr_red);
+				//System.out.println(curr_red);
 				Sound.beep();
 				numberLines++;
 			}
 			
-			//prev_red = curr_red;
+			prev_red = curr_red;
 		}
+		
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		
 		try {
 			Thread.sleep(2000);
 		} catch (InterruptedException e) {
@@ -115,19 +119,39 @@ public class FinalLightLocalizer implements Runnable {
 		double xZero = d * Math.cos(Math.toRadians(deltaY / 2));
 		double yZero = d * Math.cos(Math.toRadians(deltaX / 2));
 
-		//Obstacleavoidance.travelTo(xZero, yZero);
+		
+		MainClass.obstacleAvoidance.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
 
+		leftMotor.setSpeed(50);
+		rightMotor.setSpeed(50);
+		
+//		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, ((angles[0] + angles[2]) / 2) - odoData.getXYT()[2] - 60), true);
+//		rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, ((angles[0] + angles[2]) / 2) - odoData.getXYT()[2] - 60), false);
+		
+		
+		leftMotor.backward();
+		rightMotor.forward();
+		
 		while (true) {
-			leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
-			rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
-			if ((curr_red - prev_red > 0.5)) {
+			curr_red = fetchUSData();
+			
+			if ( prev_red - curr_red > 3.5) {
+				Sound.beep();
+				leftMotor.stop(true);
+				rightMotor.stop(false);
 				break;
 			}
+			prev_red = curr_red;
 		}
+		
+		leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 3), true);
+		rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 3), false);
+		
+		/*
 		double[] position = { TILE_WIDTH, TILE_WIDTH, 0 };
 		boolean[] set = { true, true, true };
 		odoData.setPosition(position);
-
+		*/
 	}
 
 	/***
@@ -148,4 +172,5 @@ public class FinalLightLocalizer implements Runnable {
 	public static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
+	
 }
