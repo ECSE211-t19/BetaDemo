@@ -120,7 +120,7 @@ public class FinalLightLocalizer implements Runnable {
 		double yZero = d * Math.cos(Math.toRadians(deltaX / 2));
 
 		
-		MainClass.obstacleAvoidance.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
+		MainClass.navigation.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
 
 		leftMotor.setSpeed(50);
 		rightMotor.setSpeed(50);

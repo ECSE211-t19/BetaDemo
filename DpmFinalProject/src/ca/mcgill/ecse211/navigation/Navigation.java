@@ -22,7 +22,7 @@ import lejos.hardware.Sound;
  * @authorAbedAtassi
  * @authorHyunSuAn
  */
-public class ObstacleAvoidance implements Runnable {
+public class Navigation implements Runnable {
 
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
@@ -77,7 +77,7 @@ public class ObstacleAvoidance implements Runnable {
 	 * @param wifi 
 	 * 
 	 */
-	public ObstacleAvoidance(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, final double TRACK,
+	public Navigation(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, final double TRACK,
 			final double WHEEL_RAD, Wifi wifi) throws OdometerExceptions { // constructor
 		this.odometer = Odometer.getOdometer();
 		this.leftMotor = leftMotor;
@@ -168,7 +168,80 @@ public class ObstacleAvoidance implements Runnable {
 		leftMotor.rotate(-convertDistance(WHEEL_RAD, 8), true);
 		rightMotor.rotate(-convertDistance(WHEEL_RAD, 8), false);
 		
+		
 	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
+	
+	/**
+	 * Method to drive to the tunnel
+	 */
+	public void travelToTunnel() {
+		if(wifi.isTunnelVertical()) {
+			
+			//travel to the lower-right corner of the tunnel
+			travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[1][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			
+
+		}
+		else {
+			
+			//travel to the point next to the upper-left corner
+			travelTo((tunnel[3][0] - 1) * TILE_WIDTH, (StartXY[1]) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			travelTo((tunnel[3][0] - 1) * TILE_WIDTH, (tunnel[3][1] + 0.5)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			
+		}
+	}
+
+	/**
+	 * Method to drive through the tunnel
+	 */
+	public void travelThroughTunnel() {
+		
+		leftMotor.setSpeed(FORWARD_SPEED);
+		rightMotor.setSpeed(FORWARD_SPEED);
+		
+		if(wifi.isTunnelVertical()) {
+			
+			leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 90), true);
+			rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 90), false);
+			travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[1][1] + 1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			
+		}
+		//assure that the robot is pointing 270
+		else {
+			leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 90), true);
+			rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 90), false);
+			travelTo((tunnel[3][0] + 1) * TILE_WIDTH,  (tunnel[3][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+		}
+		
+	}
+	/**
+	 * Method to travel to the ringSet
+	 * 
+	 */
+	public void travelToRingSet() {
+		int uLX = tunnel[2][0];
+		int uRX = tunnel[3][0];
+		
+		if((uLX + uRX) / 2 > tree[0]) {
+			
+			travelTo(odometer.getXYT()[0] / TILE_WIDTH, tree[1], FORWARD_SPEED, ROTATE_SPEED);
+			travelTo(tree[0]+1,tree[1], FORWARD_SPEED, ROTATE_SPEED);
+			
+		}
+		
+		else {
+			travelTo(odometer.getXYT()[0] / TILE_WIDTH, tree[1], FORWARD_SPEED, ROTATE_SPEED);
+			travelTo(tree[0] - 1,tree[1], FORWARD_SPEED, ROTATE_SPEED);
+		}
+		
+	}
+	////////////////////////////////////////////////////////////////////////////////////////////////////////
+	
 	
 	
 	/***
@@ -177,7 +250,7 @@ public class ObstacleAvoidance implements Runnable {
 	 * 
 	 * @param distance
 	 */
-	void travel(double distance) {
+	void travelForward(double distance) {
 		// drive forward required distance
 		leftMotor.setSpeed(FORWARD_SPEED);
 		rightMotor.setSpeed(FORWARD_SPEED);

@@ -37,7 +37,7 @@ public class MainClass {
 	public static final double TRACK = 10.7; //66
 	public Odometer odometer;
 	public static ArmController armController;
-	public static ObstacleAvoidance obstacleAvoidance;
+	public static Navigation navigation;
 	
 	public static void main(String[] args) throws OdometerExceptions {
 		int buttonChoice;
@@ -55,7 +55,7 @@ public class MainClass {
 		
 		//FinalLightLocalizer lightLocalizer2 = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 		Wifi wifi = new Wifi();
-		obstacleAvoidance = new ObstacleAvoidance(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
+		navigation = new Navigation(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
 		
 		//do {
@@ -87,8 +87,7 @@ public class MainClass {
 			Thread odoDisplayThread = new Thread(odometryDisplay);
 			odoDisplayThread.start();
 			
-			//wifi.getMapData();
-			//armController.run();
+			
 			usLocalizer.run();
 			
 			//lightLocalizer2.run();
@@ -98,7 +97,14 @@ public class MainClass {
 			Sound.beep();
 //			
 //			
-			obstacleAvoidance.run(); // run the obstacleAvoidance
+			navigation.run(); // run the obstacleAvoidance
+			
+			navigation.travelToTunnel();
+			Sound.beep();
+			navigation.travelThroughTunnel();
+			Sound.beep();
+			navigation.travelToRingSet();
+			Sound.beep();
 			armController.run();
 
 			
