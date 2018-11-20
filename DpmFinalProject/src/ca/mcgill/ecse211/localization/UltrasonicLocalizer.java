@@ -1,10 +1,13 @@
 package ca.mcgill.ecse211.localization;
 
+import java.util.concurrent.TimeUnit;
+
 import ca.mcgill.ecse211.navigation.MainClass;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import lejos.hardware.Sound;
 import lejos.hardware.ev3.LocalEV3;
+import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.port.Port;
 import lejos.hardware.sensor.EV3UltrasonicSensor;
@@ -77,9 +80,21 @@ public class UltrasonicLocalizer implements Runnable {
 		// facing the wall at the start
 		double angle1;
 		double angle2;
-		fetchUSData();
-		if (this.distance < 70) {
-			while (this.distance < 70) {
+		
+		
+		usSensor.fetchSample(usData, 0);
+		LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 4);
+		this.distance = (int) (usData[0] * 100.0);
+		
+		while(this.distance == 0.0)
+		{
+			usSensor.fetchSample(usData, 0);
+			LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 4);
+			this.distance = (int) (usData[0] * 100.0);
+		}
+		
+		if (this.distance < 100) {
+			while (this.distance < 100) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.backward();
@@ -106,7 +121,7 @@ public class UltrasonicLocalizer implements Runnable {
 			
 			angle1 = odometer.getXYT()[2];
 			
-			while (this.distance < 70) {
+			while (this.distance < 100) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.forward();
@@ -150,7 +165,7 @@ public class UltrasonicLocalizer implements Runnable {
 			rightMotor.stop(false);
 			angle1 = 360 - odometer.getXYT()[2];
 
-			while (this.distance < 70) {
+			while (this.distance < 100) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.forward();
@@ -181,12 +196,14 @@ public class UltrasonicLocalizer implements Runnable {
 			rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), false);
 			
 		}
-//		leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), true);
-//		rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), false);
-//		
+
 		
-		leftMotor.stop(true);
-		rightMotor.stop(false);
+		Sound.beep();
+		
+		
+		
+		//leftMotor.stop(true);
+		//rightMotor.stop(false);
 		//odometer.setTheta(0);
 	}
 
