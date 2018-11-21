@@ -10,7 +10,7 @@ import lejos.hardware.sensor.EV3ColorSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
-public class RingColours {
+public class RingColour {
 	
 	//private static final Port csPort = LocalEV3.get().getPort("S3"); //change to proper port
 	
@@ -29,7 +29,7 @@ public class RingColours {
 	/**
 	 * Create new color sensor and assign keys to the colorMap
 	 */
-	public RingColours() {
+	public RingColour() {
 		
 		SensorModes ColorSensor = MainClass.ringSensor;
 		ring_color_sample_provider = ColorSensor.getMode("RGB");
