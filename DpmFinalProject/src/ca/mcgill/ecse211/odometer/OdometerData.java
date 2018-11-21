@@ -37,6 +37,8 @@ public class OdometerData {
   private volatile boolean isReseting = false; // Indicates if a thread is
                                                // trying to reset any
                                                // position parameters
+  protected volatile boolean isResetingTheta = false; // to check if theta is getting resetted HSA
+  
   private Condition doneReseting = lock.newCondition(); // Let other threads
                                                         // know that a reset
                                                         // operation is
@@ -146,12 +148,14 @@ public class OdometerData {
   public void setXYT(double x, double y, double theta) {
     lock.lock();
     isReseting = true;
+    isResetingTheta = true;
     try {
       this.x = x;
       this.y = y;
       this.theta = theta;
       MainClass.gyroSensor.reset();
       isReseting = false; // Done reseting
+      isResetingTheta = false;
       doneReseting.signalAll(); // Let the other threads know that you are
                                 // done reseting
     } finally {
@@ -203,10 +207,12 @@ public class OdometerData {
   public void setTheta(double theta) {
     lock.lock();
     isReseting = true;
+    isResetingTheta = true;
     try {
       this.theta = theta;
       MainClass.gyroSensor.reset();
       isReseting = false; // Done reseting
+      isResetingTheta = false;
       doneReseting.signalAll(); // Let the other threads know that you are
                                 // done reseting
     } finally {

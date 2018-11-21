@@ -22,9 +22,6 @@ import lejos.robotics.SampleProvider;
  * @authorHyunSuAn
  */
 public class UltrasonicLocalizer implements Runnable {
-	public enum LocalizationType {
-		FALLING_EDGE, RISING_EDGE
-	};
 
 	private static final int FILTER_OUT = 30;
 	public static final int WALL_DISTANCE = 40;
@@ -66,9 +63,7 @@ public class UltrasonicLocalizer implements Runnable {
 		} catch (InterruptedException e) {
 		}
 		
-			doFallingEdge();
-		
-
+		doFallingEdge();
 	}
 
 	/*** This method starts the falling edge localization
@@ -83,13 +78,13 @@ public class UltrasonicLocalizer implements Runnable {
 		
 		
 		usSensor.fetchSample(usData, 0);
-		LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 4);
+		LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 3);
 		this.distance = (int) (usData[0] * 100.0);
 		
 		while(this.distance == 0.0)
 		{
 			usSensor.fetchSample(usData, 0);
-			LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 4);
+			//LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 4);
 			this.distance = (int) (usData[0] * 100.0);
 		}
 		
@@ -197,9 +192,11 @@ public class UltrasonicLocalizer implements Runnable {
 			
 		}
 
+		LCD.drawString(Double.toString(odometer.getXYT()[2]), 1, 4);
 		
+		LCD.drawString(Float.toString(odometer.prev_gyro_value), 1, 5);
+
 		Sound.beep();
-		
 		
 		
 		//leftMotor.stop(true);

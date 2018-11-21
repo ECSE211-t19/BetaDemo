@@ -27,7 +27,8 @@ public class Odometer extends OdometerData implements Runnable {
   private EV3GyroSensor gyroSensor;
   private SampleProvider gyroSampleProvider;
   private float[] gyro_sample;
-  private float prev_gyro_value;
+  
+  public float prev_gyro_value;
   private float curr_gyro_value;
 
   private final double TRACK;
@@ -124,7 +125,13 @@ public class Odometer extends OdometerData implements Runnable {
     
     
     while (true) {
-    	updateStart = System.currentTimeMillis();
+    	
+    		if(super.isResetingTheta)
+    		{
+    			prev_gyro_value = 0;
+    		}
+    	
+    		updateStart = System.currentTimeMillis();
     		leftMotorTachoCount = leftMotor.getTachoCount();
     		rightMotorTachoCount = rightMotor.getTachoCount();
     		

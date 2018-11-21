@@ -53,7 +53,7 @@ public class MainClass {
 
 		LightLocalizer lightLocalizer = new LightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 		
-		//FinalLightLocalizer lightLocalizer2 = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
+		FinalLightLocalizer lightLocalizer2 = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 		Wifi wifi = new Wifi();
 		navigation = new Navigation(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
@@ -63,11 +63,11 @@ public class MainClass {
 			lcd.clear();
 			
 ////			// ask the user whether the motors should drive in a square or float
-          lcd.drawString("< Left    |  Right >", 0, 0);
-          lcd.drawString("          |         ", 0, 1);
-           lcd.drawString(" Color    | Start   ", 0, 2);
-           lcd.drawString("Detection | Search  ", 0, 3);
-            lcd.drawString("          |         ", 0, 4);
+          lcd.drawString("< Left   |  Right >", 0, 0);
+          lcd.drawString("         |         ", 0, 1);
+          lcd.drawString(" Color   | Start   ", 0, 2);
+          lcd.drawString("Detection| Search  ", 0, 3);
+          lcd.drawString("         |         ", 0, 4);
 //			
 			
 			//buttonChoice = Button.waitForAnyPress();
@@ -88,24 +88,25 @@ public class MainClass {
 			odoDisplayThread.start();
 			
 			
-			usLocalizer.run();
 			
-			//lightLocalizer2.run();
+			//usLocalizer.run();
+			
+			lightLocalizer2.run();
 			
 			
-			lightLocalizer.run();
-			Sound.beep();
+//			lightLocalizer.run();
+//			Sound.beep();
+//
 //			
+//			navigation.run(); // run the obstacleAvoidance
 //			
-			navigation.run(); // run the obstacleAvoidance
-			
-			navigation.travelToTunnel();
-			Sound.beep();
-			navigation.travelThroughTunnel();
-			Sound.beep();
-			navigation.travelToRingSet();
-			Sound.beep();
-			armController.run();
+//			navigation.travelToTunnel();
+//			Sound.beep();
+//			navigation.travelThroughTunnel();
+//			Sound.beep();
+//			navigation.travelToRingSet();
+//			Sound.beep();
+//			armController.run();
 
 			
 		//}

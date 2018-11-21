@@ -21,7 +21,7 @@ public class FinalLightLocalizer implements Runnable {
 	private float light_value;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private static final double d = 10.5; // distance between the center of the robot and the light sensor
+	private static final double d = 13.1; // distance between the center of the robot and the light sensor
 	private static final double TILE_WIDTH = 30.48;
 	private static final int ROTATE_SPEED = 100;
 	private double TRACK;
@@ -32,7 +32,7 @@ public class FinalLightLocalizer implements Runnable {
 	private int startCorner;
 	private double dX;
 	private double dY;
-	private float first, second, third, fourth;
+	private float first, second, third, fourth, angleCorrection;
 
 	/***
 	 * Constructor
@@ -76,11 +76,14 @@ public class FinalLightLocalizer implements Runnable {
 	 * 
 	 */
 	public void do_localization() {
+		odoData.setX(0);
+		odoData.setY(0);
 		odoData.setTheta(0);
 		int numberLines = 0;
 		double[] angles = new double[4];
 		boolean line = false;
 
+		//angleCorrection = odoData.prev_gyro_value;
 		
 		Sound.beep();
 		
@@ -88,12 +91,16 @@ public class FinalLightLocalizer implements Runnable {
 		rightMotor.setSpeed(ROTATE_SPEED);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
 		rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
-		//prev_red = fetchUSData();
+		
+		
+		prev_red = fetchUSData();
+		
 		while (numberLines < 4) {
 			curr_red = fetchUSData();
 			
-			if ( prev_red - curr_red > 3.5) {
+			if ( prev_red - curr_red > 3.5) { //3.5
 				
+//				angles[numberLines] = Math.abs(odoData.prev_gyro_value - angleCorrection);
 				angles[numberLines] = odoData.getXYT()[2];
 				//System.out.println(prev_red);
 				//System.out.println(curr_red);
@@ -122,6 +129,7 @@ public class FinalLightLocalizer implements Runnable {
 		
 		MainClass.navigation.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
 
+		/*
 		leftMotor.setSpeed(50);
 		rightMotor.setSpeed(50);
 		
@@ -146,6 +154,8 @@ public class FinalLightLocalizer implements Runnable {
 		
 		leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 3), true);
 		rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 3), false);
+		*/
+		
 		
 		/*
 		double[] position = { TILE_WIDTH, TILE_WIDTH, 0 };
