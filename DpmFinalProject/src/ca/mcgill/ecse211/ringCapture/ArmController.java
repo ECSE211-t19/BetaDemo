@@ -13,6 +13,8 @@ import lejos.robotics.SampleProvider;
 
 
 /**
+ * This class controls the forklift that gets the rings off the tree. 
+ * It calls the RingColours class in order to determine the colour of the captured ring.
  * 
  * @author Noam Suissa
  *
@@ -29,7 +31,7 @@ public class ArmController {
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
 
-	private RingColours ringColours;
+	private RingColour ringColours;
 
 	/**
 	 * Initializes motors and hardware constants
@@ -45,9 +47,8 @@ public class ArmController {
 		this.armMotor = armMotor;
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
-		WHEELRADIUS = wheelRadius;
-		TRACK = track;
-		
+		this.WHEELRADIUS = wheelRadius;
+		this.TRACK = track;
 	}
 
 	/**
@@ -56,7 +57,7 @@ public class ArmController {
 	public void run() {
 
 		//create new ring detection object
-		ringColours = new RingColours(); //change place in code depending on when you want to activate light sensor.
+		ringColours = new RingColour(); //change place in code depending on when you want to activate light sensor.
 
 		moveArm(BOTTOMTOFIRST);
 
@@ -72,6 +73,11 @@ public class ArmController {
 		}
 
 	}
+	/**
+	 * This method moves the arm to the level provided as an argument.
+	 * 
+	 * @param level
+	 */
 
 	private void moveArm(double level) {
 		armMotor.setSpeed(FORWARD_SPEED);
@@ -80,7 +86,8 @@ public class ArmController {
 	}
 
 	/**
-	 * This method moves the robot carefully in a certain manner to retrieve and detect a ring coulour
+	 * This method moves the robot carefully in a certain manner to retrieve and detect a ring colour
+	 * The robot moves forward slightly to knock the ring off the tree and onto the forklift.
 	 * @return true or false depending on if a first level ring was detected 
 	 */
 	private boolean moveRobot() {
@@ -102,12 +109,12 @@ public class ArmController {
 
 		leftMotor.setSpeed(FORWARD_SPEED/3);
 		rightMotor.setSpeed(FORWARD_SPEED/3);
+		
 		//move robot back to retrieve arm
 		leftMotor.rotate(-convertDistance(WHEELRADIUS, 12), true); 
 		rightMotor.rotate(-convertDistance(WHEELRADIUS, 12), false);
 
-		for (int i = 0; i < 7; i ++)
-		{
+		for (int i = 0; i < 7; i ++){
 			//detect color and beep accordingly
 			if(ringColours.colourDetected("Orange")) {
 				beep(4);
@@ -129,7 +136,6 @@ public class ArmController {
 			}
 			
 		}
-		
 		Sound.beepSequenceUp();
 		return firstLevelDetected;
 	}
