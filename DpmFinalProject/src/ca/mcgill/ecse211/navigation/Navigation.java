@@ -137,9 +137,9 @@ public class Navigation implements Runnable {
 		}
 		
 		
-		odometer.setX(7 * TILE_WIDTH);
-		odometer.setY(TILE_WIDTH);
-		odometer.setTheta(270);
+//		odometer.setX(7 * TILE_WIDTH);
+//		odometer.setY(TILE_WIDTH);
+//		odometer.setTheta(270);
 		
 		
 		// implemented this for loop so that navigation will work for any number of

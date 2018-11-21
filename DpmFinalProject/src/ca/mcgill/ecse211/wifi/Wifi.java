@@ -10,7 +10,7 @@ import lejos.hardware.lcd.LCD;
 public class Wifi {
 
   // ** Set these as appropriate for your team and current situation **
-  private static final String SERVER_IP = "192.168.2.26";
+  private static final String SERVER_IP = "192.168.2.8";
   private static final int TEAM_NUMBER = 19;
   private Map data; 
   private int team;
@@ -160,6 +160,7 @@ public class Wifi {
 			int[][] redTunnel = { { llx, lly }, { urx, lly },{ urx, ury }, { llx, ury } };
 
 			return redTunnel;
+			
 
 		case 0:
 			LCD.drawString("green" , 0, 5);
@@ -236,10 +237,10 @@ public class Wifi {
 	public boolean isTunnelVertical() {
 		
 		team = getTeam();
-		int llx = ((Long) data.get("Island_LL_x")).intValue();
-		
-		switch (team) {
-		case 1:
+		//int llx = ((Long) data.get("Island_LL_x")).intValue();
+		int llx, urx;
+		//switch (team) {
+		/*case 1:
 			int urxR = ((Long) data.get("TNR_UR_x")).intValue();
 			if (urxR <= llx) {
 				return true;
@@ -257,12 +258,12 @@ public class Wifi {
 		}
 	
 		
-		/*
+		
 		if (urx <= llx) {
 			return true;
 		} else {
 			return false;
-		}
+		}*/
 		switch (team) {
 		case 1:
 			llx = ((Long) data.get("TNR_LL_x")).intValue();
@@ -287,8 +288,8 @@ public class Wifi {
 			
 		default: return false;
 
-		}*/
+		}
+	
 	}
-  
   
 }

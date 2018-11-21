@@ -131,7 +131,7 @@ public class FinalLightLocalizer implements Runnable {
 		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 48), true);
 		rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 48), false);
 		//MainClass.navigation.turnTo(270, ROTATE_SPEED);
-		odoData.setXYT(7 * TILE_WIDTH, TILE_WIDTH, 270);
+		//odoData.setXYT(7 * TILE_WIDTH, TILE_WIDTH, 270);
 
 		//odoData.setXYT(7, 1, theta);
 		/*

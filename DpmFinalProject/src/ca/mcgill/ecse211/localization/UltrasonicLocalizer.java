@@ -25,7 +25,7 @@ public class UltrasonicLocalizer implements Runnable {
 
 	private static final int FILTER_OUT = 30;
 	public static final int WALL_DISTANCE = 40;
-	public static int ROTATION_SPEED = 100;
+	public static int ROTATION_SPEED = 130;
 	private EV3LargeRegulatedMotor leftMotor, rightMotor;
 	private SampleProvider usSensor;
 	private Odometer odometer;
@@ -58,11 +58,11 @@ public class UltrasonicLocalizer implements Runnable {
 	 */
 	public void run() {
 
-		try {
-			Thread.sleep(2000);
+	/*	try {
+			//Thread.sleep(2000);
 		} catch (InterruptedException e) {
 		}
-		
+		*/
 		doFallingEdge();
 	}
 

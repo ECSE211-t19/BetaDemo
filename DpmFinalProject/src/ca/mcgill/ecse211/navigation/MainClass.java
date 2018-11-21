@@ -60,29 +60,7 @@ public class MainClass {
 		pilot = new Pilot(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi, navigation);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
 		
-		//do {
-			// clear the display
-			lcd.clear();
-			
-////			// ask the user whether the motors should drive in a square or float
-          lcd.drawString("< Left   |  Right >", 0, 0);
-          lcd.drawString("         |         ", 0, 1);
-          lcd.drawString(" Color   | Start   ", 0, 2);
-          lcd.drawString("Detection| Search  ", 0, 3);
-          lcd.drawString("         |         ", 0, 4);
-//			
-			
-			//buttonChoice = Button.waitForAnyPress();
-		//} while (buttonChoice != Button.ID_LEFT && buttonChoice != Button.ID_RIGHT);
 		
-		/*if (buttonChoice == Button.ID_LEFT)
-		{
-			Thread colorThread = new Thread(colorDisplay);
-			colorThread.start();
-		}
-		else
-		{
-*/
 			// Start odometer and display threads
 			Thread odoThread = new Thread(odometer);
 			odoThread.start();
@@ -91,10 +69,10 @@ public class MainClass {
 			
 			
 			
-			//usLocalizer.run();
+			usLocalizer.run();
 			
-			//FinalLightLocalizer.run();
-			//Sound.beep();
+			FinalLightLocalizer.run();
+			Sound.beep();
 			//navigation.travelTo(5 * 30.48, 1 * 30.48, 200, 150);
 			pilot.run();
 			Sound.beep();

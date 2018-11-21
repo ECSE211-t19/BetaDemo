@@ -68,9 +68,9 @@ public class Pilot implements Runnable{
 			// there is nothing to be done here because it is not expected that
 			// the odometer will be interrupted by another thread
 		}
-		odoData.setXYT(7 * TILE_WIDTH, TILE_WIDTH, 270);
+		odoData.setXYT(StartXY[0] * TILE_WIDTH, StartXY[1] * TILE_WIDTH, 270);
 		travelToTunnel();
-		//travelThroughTunnel();
+		travelThroughTunnel();
 		//travelToRingSet();
 	}
 	
@@ -81,19 +81,60 @@ public class Pilot implements Runnable{
 	public void travelToTunnel() {
 		
 		if(wifi.isTunnelVertical()) {
-			LCD.drawString("tunnel: " +tunnel[1][0] + "" + tunnel[1][1]+ " start: " + StartXY[1]  , 0, 3);
-			//travel to the lower-right corner of the tunnel
-			navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[1][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			
+		
+			switch(StartingCorner) {
+			
+			case 0: 
+				
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[1][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				break;
+			
+			case 1:
 			
 
+				navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[1][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				break;
+			case 2:
+			
+				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[3][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				break;
+			case 3:
+			
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[3][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				break;
+			}
 		}
 		else {
-			LCD.drawString("lol"  , 0, 4);
+			LCD.drawString("lol"  , 0, 5);
 
-			//travel to the point next to the upper-left corner
-			navigation.travelTo((tunnel[3][0] - 1) * TILE_WIDTH, (StartXY[1]) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			navigation.travelTo((tunnel[3][0] - 1) * TILE_WIDTH, (tunnel[3][1] + 0.5)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+switch(StartingCorner) {
+			
+			case 0: 
+				navigation.travelTo((StartXY[0])  * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				break;
+			
+			case 1:
+				navigation.travelTo((StartXY[0])  * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				break;
+				
+			case 2:
+				navigation.travelTo((StartXY[0])  * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				break;
+				
+			case 3:
+				navigation.travelTo((StartXY[0])  * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				break;
+				
+			}
 			
 		}
 	}
@@ -103,19 +144,18 @@ public class Pilot implements Runnable{
 	 */
 	public void travelThroughTunnel() {
 		
-		leftMotor.setSpeed(FORWARD_SPEED);
-		rightMotor.setSpeed(FORWARD_SPEED);
+		
 		
 		if(wifi.isTunnelVertical()) {
+			LCD.drawString("lol"  , 0, 3);
 			
-			leftMotor.rotate(navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
-			rightMotor.rotate(- navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
 			navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[1][1] + 1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+			navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
 			
 		}
 		//assure that the robot is pointing 270
 		else {
+			LCD.drawString("no vert"  , 0, 4);
 			leftMotor.rotate(- navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
 			rightMotor.rotate(navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
 			navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH,  (tunnel[3][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
