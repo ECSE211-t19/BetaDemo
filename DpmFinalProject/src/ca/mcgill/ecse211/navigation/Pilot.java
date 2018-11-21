@@ -145,8 +145,16 @@ public class Pilot implements Runnable{
 		
 	}
 	
+	public void travelBackToTunnel() {
+		
+	}
 	
+	public void travelBackThroughTunnel() {
+		
+	}
 	
-	
+	public void travelBackToStartingCorner() {
+		
+	}
 	
 }

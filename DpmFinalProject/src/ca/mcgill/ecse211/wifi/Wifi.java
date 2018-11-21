@@ -27,7 +27,7 @@ public class Wifi {
     // Initialize WifiConnection class
     WifiConnection conn = new WifiConnection(SERVER_IP, TEAM_NUMBER, ENABLE_DEBUG_WIFI_PRINT);
 
-    // Connect to server and get the data, catching any errors that might occur
+    // Connect to server and get the data
     try {
      
       data = conn.getData();
@@ -37,8 +37,7 @@ public class Wifi {
       System.err.println("Error: " + e.getMessage());
     }
 
-    // Wait until user decides to end program
-    //Button.waitForAnyPress();
+ 
   }
   /**
 	 * Gets the color of the team. 
@@ -236,15 +235,59 @@ public class Wifi {
 	 */
 	public boolean isTunnelVertical() {
 		
-		int llx = ((Long) data.get("TNG_LL_x")).intValue();
-		int urx = ((Long) data.get("TNG_UR_x")).intValue();
+		team = getTeam();
+		int llx = ((Long) data.get("Island_LL_x")).intValue();
 		
-		if(urx-llx == 1) {
-			return true;
+		switch (team) {
+		case 1:
+			int urxR = ((Long) data.get("TNR_UR_x")).intValue();
+			if (urxR <= llx) {
+				return true;
+			} else {
+				return false;
+			}
+		case 0:
+			int urxG = ((Long) data.get("TNG_UR_x")).intValue();
+			if (urxG <= llx) {
+				return true;
+			} else {
+				return false;
+			}
+		default: return false;
 		}
-		else {
+	
+		
+		/*
+		if (urx <= llx) {
+			return true;
+		} else {
 			return false;
-		}	
+		}
+		switch (team) {
+		case 1:
+			llx = ((Long) data.get("TNR_LL_x")).intValue();
+			urx = ((Long) data.get("TNR_UR_x")).intValue();
+
+			if(urx-llx == 1) {
+				return true;
+			}
+			else {
+				return false;
+			}
+		case 0:
+			llx = ((Long) data.get("TNG_LL_x")).intValue();
+			urx = ((Long) data.get("TNG_UR_x")).intValue();
+
+			if(urx-llx == 1) {
+				return true;
+			}
+			else {
+				return false;
+			}
+			
+		default: return false;
+
+		}*/
 	}
   
   
