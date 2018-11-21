@@ -78,7 +78,7 @@ public class UltrasonicLocalizer implements Runnable {
 		
 		
 		usSensor.fetchSample(usData, 0);
-		LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 3);
+		//LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 3);
 		this.distance = (int) (usData[0] * 100.0);
 		
 		while(this.distance == 0.0)
@@ -192,9 +192,9 @@ public class UltrasonicLocalizer implements Runnable {
 			
 		}
 
-		LCD.drawString(Double.toString(odometer.getXYT()[2]), 1, 4);
+		//LCD.drawString(Double.toString(odometer.getXYT()[2]), 1, 4);
 		
-		LCD.drawString(Float.toString(odometer.prev_gyro_value), 1, 5);
+		//LCD.drawString(Float.toString(odometer.prev_gyro_value), 1, 5);
 
 		Sound.beep();
 		

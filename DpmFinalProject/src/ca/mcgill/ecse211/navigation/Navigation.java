@@ -44,6 +44,7 @@ public class Navigation implements Runnable {
 	private final String SEARCHCOLOR = "Yellow";
 	private int[] searchColorVal;
 	Wifi wifi;
+	
 
 	private Map<String, int[]> colorMap = new HashMap<String, int[]>();
 	private int[] greenRing = { 52988, 115452, 15269, 13376, 26599, 1532 }; // Rm, Gm,Bm, Rsd, Gsd, Bsd values (times
@@ -57,6 +58,7 @@ public class Navigation implements Runnable {
 	int tunnel[][];
 	int SearchZone[][];
 	int tree[];
+	int team;
 
 	// under demo conditions
 	private int[] greenRing_1 = { 63283, 143777, 14267, 12707, 24629, 4062 };
@@ -95,7 +97,8 @@ public class Navigation implements Runnable {
 		SensorModes ringSensor = MainClass.ringSensor;
 		this.ring_color_sample_provider = ringSensor.getMode("RGB");
 		this.color_samples = new float[ring_color_sample_provider.sampleSize()]; // ring sensor
-		this.StartingCorner = wifi.getStartingCorner();
+		this.team = wifi.getTeam();
+		this.StartingCorner = wifi.getStartingCorner(team);
 		this.StartXY = wifi.getStartingCornerCoords();
 		this.tunnel = wifi.getTunnel();
 		this.tree = wifi.getRingSet();
@@ -170,78 +173,6 @@ public class Navigation implements Runnable {
 		
 		
 	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
-	
-	/**
-	 * Method to drive to the tunnel
-	 */
-	public void travelToTunnel() {
-		if(wifi.isTunnelVertical()) {
-			
-			//travel to the lower-right corner of the tunnel
-			travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[1][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			
-
-		}
-		else {
-			
-			//travel to the point next to the upper-left corner
-			travelTo((tunnel[3][0] - 1) * TILE_WIDTH, (StartXY[1]) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			travelTo((tunnel[3][0] - 1) * TILE_WIDTH, (tunnel[3][1] + 0.5)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			
-		}
-	}
-
-	/**
-	 * Method to drive through the tunnel
-	 */
-	public void travelThroughTunnel() {
-		
-		leftMotor.setSpeed(FORWARD_SPEED);
-		rightMotor.setSpeed(FORWARD_SPEED);
-		
-		if(wifi.isTunnelVertical()) {
-			
-			leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 90), true);
-			rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 90), false);
-			travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[1][1] + 1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			
-		}
-		//assure that the robot is pointing 270
-		else {
-			leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 90), true);
-			rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 90), false);
-			travelTo((tunnel[3][0] + 1) * TILE_WIDTH,  (tunnel[3][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-			travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1)* TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-		}
-		
-	}
-	/**
-	 * Method to travel to the ringSet
-	 * 
-	 */
-	public void travelToRingSet() {
-		int uLX = tunnel[2][0];
-		int uRX = tunnel[3][0];
-		
-		if((uLX + uRX) / 2 > tree[0]) {
-			
-			travelTo(odometer.getXYT()[0] / TILE_WIDTH, tree[1], FORWARD_SPEED, ROTATE_SPEED);
-			travelTo(tree[0]+1,tree[1], FORWARD_SPEED, ROTATE_SPEED);
-			
-		}
-		
-		else {
-			travelTo(odometer.getXYT()[0] / TILE_WIDTH, tree[1], FORWARD_SPEED, ROTATE_SPEED);
-			travelTo(tree[0] - 1,tree[1], FORWARD_SPEED, ROTATE_SPEED);
-		}
-		
-	}
-	////////////////////////////////////////////////////////////////////////////////////////////////////////
-	
 	
 	
 	/***
@@ -385,7 +316,7 @@ public class Navigation implements Runnable {
 	 * 
 	 * @param theta
 	 */
-	void turnTo(double theta, int speed) {
+	public void turnTo(double theta, int speed) {
 		if (theta > 180) { // angle convention. the robot should turn in direction
 			theta = 360 - theta;
 			leftMotor.setSpeed(speed);
@@ -499,7 +430,7 @@ public class Navigation implements Runnable {
 	 *            distance
 	 * @return int returns the angle
 	 */
-	private static int convertDistance(double radius, double distance) {
+	public static int convertDistance(double radius, double distance) {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
@@ -511,7 +442,7 @@ public class Navigation implements Runnable {
 	 *            width, angle
 	 * @return int returns the distance
 	 */
-	private static int convertAngle(double radius, double width, double angle) {
+	static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
 }
