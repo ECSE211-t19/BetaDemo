@@ -76,6 +76,7 @@ public class MainClass {
 			//navigation.travelTo(5 * 30.48, 1 * 30.48, 200, 150);
 			pilot.run();
 			Sound.beep();
+			FinalLightLocalizer.run();
 //			lightLocalizer.run();
 //			Sound.beep();
 

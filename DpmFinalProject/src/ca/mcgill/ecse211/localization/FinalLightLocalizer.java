@@ -23,7 +23,7 @@ public class FinalLightLocalizer implements Runnable {
 	private EV3LargeRegulatedMotor rightMotor;
 	private static final double d = 13.1; // distance between the center of the robot and the light sensor
 	private static final double TILE_WIDTH = 30.48;
-	private static final int ROTATE_SPEED = 100;
+	private static final int ROTATE_SPEED = 110;
 	private double TRACK;
 	private double WHEEL_RAD;
 	private Odometer odoData;
@@ -60,11 +60,11 @@ public class FinalLightLocalizer implements Runnable {
 			// e1.printStackTrace();
 		}
 		// wait
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-
-		}
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//
+//		}
 
 		do_localization();
 	}
@@ -114,11 +114,11 @@ public class FinalLightLocalizer implements Runnable {
 		leftMotor.stop(true);
 		rightMotor.stop(false);
 		
-		try {
-			Thread.sleep(2000);
-		} catch (InterruptedException e) {
-
-		}
+//		try {
+//			Thread.sleep(2000);
+//		} catch (InterruptedException e) {
+//
+//		}
 		// do calculations
 		double deltaX = angles[2] - angles[0];
 		double deltaY = angles[3] - angles[1];
@@ -128,8 +128,8 @@ public class FinalLightLocalizer implements Runnable {
 
 		
 		MainClass.navigation.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
-		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 48), true);
-		rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 48), false);
+		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
+        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
 		//MainClass.navigation.turnTo(270, ROTATE_SPEED);
 		//odoData.setXYT(7 * TILE_WIDTH, TILE_WIDTH, 270);
 

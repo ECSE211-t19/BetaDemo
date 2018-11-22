@@ -71,7 +71,7 @@ public class Pilot implements Runnable{
 		odoData.setXYT(StartXY[0] * TILE_WIDTH, StartXY[1] * TILE_WIDTH, 270);
 		travelToTunnel();
 		travelThroughTunnel();
-		//travelToRingSet();
+		travelToRingSet();
 	}
 	
 	
@@ -93,10 +93,10 @@ public class Pilot implements Runnable{
 			
 			case 1:
 			
-
-				navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-				navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[1][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
-				break;
+				LCD.drawString("tunnel " + tunnel[1][0]+ " " + tunnel[1][1]  , 0, 4);
+				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[1][1]-1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+				return ;
 			case 2:
 			
 				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH,StartXY[1] * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
