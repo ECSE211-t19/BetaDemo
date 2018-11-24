@@ -22,7 +22,7 @@ import lejos.hardware.Sound;
  * @authorAbedAtassi
  * @authorHyunSuAn
  */
-public class Navigation implements Runnable {
+public class Navigation  {
 
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
@@ -64,16 +64,6 @@ public class Navigation implements Runnable {
 
 	}
 
-	/***
-	 * This method iterates through the waypoints
-	 */
-	public void run() {
-		for (EV3LargeRegulatedMotor motor : new EV3LargeRegulatedMotor[] { leftMotor, rightMotor }) {
-			motor.stop();
-			motor.setAcceleration(250); // reduced the acceleration to make it smooth
-		}
-
-	}
 
 	/***
 	 * This makes the robot move forward
@@ -127,13 +117,6 @@ public class Navigation implements Runnable {
 
 	}
 
-	/***
-	 * This method detects the color of the ring
-	 * 
-	 * 
-	 * @param keepLooking
-	 * @return boolean returns if the right color is detected or not
-	 */
 
 	/***
 	 * This method makes the robot turn to the minimum specified angle
@@ -175,14 +158,6 @@ public class Navigation implements Runnable {
 
 	}
 
-	/***
-	 * This method creates the waypoints from the lower left and upper right corner
-	 * 
-	 * 
-	 * @param xl,
-	 *            yl, xt, yt
-	 * @return double[][] returns a list of the waypoints
-	 */
 
 	/***
 	 * This method converts the specified distance to an angle
