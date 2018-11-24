@@ -15,8 +15,7 @@ import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
 /***
- * This class implements the falling edge US localization on the EV3
- * platform.
+ * This class implements the falling edge US localization on the EV3 platform.
  * 
  * @authorAbedAtassi
  * @authorHyunSuAn
@@ -33,7 +32,6 @@ public class UltrasonicLocalizer implements Runnable {
 
 	private int distance = 0;
 	private int filter_control = 0;
-	
 
 	/***
 	 * Constructor
@@ -58,36 +56,28 @@ public class UltrasonicLocalizer implements Runnable {
 	 */
 	public void run() {
 
-	/*	try {
-			//Thread.sleep(2000);
-		} catch (InterruptedException e) {
-		}
-		*/
 		doFallingEdge();
 	}
 
-	/*** This method starts the falling edge localization
-	   * 
-	   * 
-	   * 
-	   */
+	/***
+	 * This method starts the falling edge localization
+	 * 
+	 * 
+	 * 
+	 */
 	public void doFallingEdge() {
 		// facing the wall at the start
 		double angle1;
 		double angle2;
-		
-		
+
 		usSensor.fetchSample(usData, 0);
-		//LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 3);
 		this.distance = (int) (usData[0] * 100.0);
-		
-		while(this.distance == 0.0)
-		{
+
+		while (this.distance == 0.0) {
 			usSensor.fetchSample(usData, 0);
-			//LCD.drawString(Float.toString(usData[0] * (float) 100.0), 1, 4);
 			this.distance = (int) (usData[0] * 100.0);
 		}
-		
+
 		if (this.distance < 100) {
 			while (this.distance < 100) {
 				leftMotor.setSpeed(ROTATION_SPEED);
@@ -100,8 +90,6 @@ public class UltrasonicLocalizer implements Runnable {
 			leftMotor.stop(true);
 			rightMotor.stop(false);
 
-			
-			
 			while (this.distance > WALL_DISTANCE) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
@@ -113,9 +101,9 @@ public class UltrasonicLocalizer implements Runnable {
 			Sound.beep();
 			leftMotor.stop(true);
 			rightMotor.stop(false);
-			
+
 			angle1 = odometer.getXYT()[2];
-			
+
 			while (this.distance < 100) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
@@ -139,13 +127,13 @@ public class UltrasonicLocalizer implements Runnable {
 			Sound.beep();
 			leftMotor.stop(true);
 			rightMotor.stop(false);
-			
+
 			angle2 = odometer.getXYT()[2];
 
-			
-			leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle2 -  angle1) / 2.0)), true);
-			rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle2 -  angle1) / 2.0)), false);
-			
+			leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle2 - angle1) / 2.0)), true);
+			rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle2 - angle1) / 2.0)),
+					false);
+
 		} else {// facing away from the walls
 			while (this.distance > WALL_DISTANCE) {
 				leftMotor.setSpeed(ROTATION_SPEED);
@@ -184,24 +172,17 @@ public class UltrasonicLocalizer implements Runnable {
 			rightMotor.stop(false);
 
 			angle2 = odometer.getXYT()[2];
-			
+
 			leftMotor.setSpeed(ROTATION_SPEED);
 			rightMotor.setSpeed(ROTATION_SPEED);
 			leftMotor.rotate(-convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), true);
-			rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)), false);
-			
+			rightMotor.rotate(convertAngle(MainClass.WHEEL_RAD, MainClass.TRACK, 45 + ((angle1 + angle2) / 2.0)),
+					false);
+
 		}
 
-		//LCD.drawString(Double.toString(odometer.getXYT()[2]), 1, 4);
-		
-		//LCD.drawString(Float.toString(odometer.prev_gyro_value), 1, 5);
-
 		Sound.beep();
-		
-		
-		//leftMotor.stop(true);
-		//rightMotor.stop(false);
-		//odometer.setTheta(0);
+
 	}
 
 	/***
@@ -235,7 +216,6 @@ public class UltrasonicLocalizer implements Runnable {
 		return (int) ((180.0 * distance) / (Math.PI * radius));
 	}
 
-	
 	/***
 	 * This method converts the specified angle to a distance
 	 * 

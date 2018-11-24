@@ -2,7 +2,7 @@
 package ca.mcgill.ecse211.navigation;
 
 import ca.mcgill.ecse211.localization.FinalLightLocalizer;
-import ca.mcgill.ecse211.localization.LightLocalizer;
+
 import ca.mcgill.ecse211.localization.UltrasonicLocalizer;
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.ringCapture.ArmController;
@@ -34,16 +34,15 @@ public class MainClass {
 
 	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
 	public static final double WHEEL_RAD = 2.07;
-	public static final double TRACK = 10.7; //66
+	public static final double TRACK = 10.6; // 66
 	public Odometer odometer;
 	public static ArmController armController;
 	public static Navigation navigation;
 	public static Pilot pilot;
-	
+
 	public static void main(String[] args) throws OdometerExceptions {
 		int buttonChoice;
 		// Sets up colour sensor and array holding data
-
 
 		// Odometer related objects
 		Odometer odometer = Odometer.getOdometer(leftMotor, rightMotor, gyroSensor, TRACK, WHEEL_RAD);
@@ -52,49 +51,37 @@ public class MainClass {
 		ColorDisplay colorDisplay = new ColorDisplay(lcd);
 		UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 
-		LightLocalizer lightLocalizer = new LightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
-		
-		FinalLightLocalizer FinalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
+		FinalLightLocalizer FinalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
+				gyroSensor);
 		Wifi wifi = new Wifi();
 		navigation = new Navigation(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
 		pilot = new Pilot(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi, navigation);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
-		
-		
-			// Start odometer and display threads
-			Thread odoThread = new Thread(odometer);
-			odoThread.start();
-			Thread odoDisplayThread = new Thread(odometryDisplay);
-			odoDisplayThread.start();
-			
-			
-			
-			usLocalizer.run();
-			
-			FinalLightLocalizer.run();
-			Sound.beep();
-			//navigation.travelTo(5 * 30.48, 1 * 30.48, 200, 150);
-			pilot.run();
-			Sound.beep();
-			FinalLightLocalizer.run();
-//			lightLocalizer.run();
-//			Sound.beep();
 
-//			navigation.run(); // run the obstacleAvoidance
-//			
-//			navigation.travelToTunnel();
-//			Sound.beep();
-//			navigation.travelThroughTunnel();
-//			Sound.beep();
-//			navigation.travelToRingSet();
-//			Sound.beep();
-//			armController.run();
+		// Start odometer and display threads
+		Thread odoThread = new Thread(odometer);
+		odoThread.start();
+		Thread odoDisplayThread = new Thread(odometryDisplay);
+		odoDisplayThread.start();
 
-			
-		//}
-		
+		usLocalizer.run();
 
-		while (Button.waitForAnyPress() != Button.ID_ESCAPE);
+		FinalLightLocalizer.run();
+		gyroSensor.reset();
+		Sound.beep();
+		pilot.run();
+		Sound.beep();
+		FinalLightLocalizer.run();
+		// lightLocalizer.run();
+		// Sound.beep();
+
+		// Sound.beep();
+		// armController.run();
+
+		// }
+
+		while (Button.waitForAnyPress() != Button.ID_ESCAPE)
+			;
 		System.exit(0);
 	}
 }

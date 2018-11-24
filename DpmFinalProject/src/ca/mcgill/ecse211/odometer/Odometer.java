@@ -146,8 +146,7 @@ public class Odometer extends OdometerData implements Runnable {
     		
     		//Computes changes in distances and theta and updates them 
     		deltaD=0.5*(distL+distR);
-    		//deltaT=(distL-distR)/TRACK; 
-    		//Theta+=deltaT; 
+    		 
     		dX=deltaD*Math.sin((super.getXYT()[2] * Math.PI) / 180.0); 
     		dY=deltaD*Math.cos((super.getXYT()[2] * Math.PI) / 180.0);
     		X=X+dX;

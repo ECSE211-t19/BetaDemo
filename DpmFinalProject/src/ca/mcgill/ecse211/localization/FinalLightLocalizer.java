@@ -3,7 +3,9 @@ package ca.mcgill.ecse211.localization;
 import lejos.hardware.Sound;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
 import lejos.hardware.sensor.EV3ColorSensor;
+import lejos.hardware.sensor.EV3GyroSensor;
 import lejos.robotics.SampleProvider;
+import sun.management.Sensor;
 import ca.mcgill.ecse211.navigation.*;
 import ca.mcgill.ecse211.odometer.*;
 import lejos.hardware.ev3.LocalEV3;
@@ -21,7 +23,7 @@ public class FinalLightLocalizer implements Runnable {
 	private float light_value;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private static final double d = 13.1; // distance between the center of the robot and the light sensor
+	private static final double d = 13; // distance between the center of the robot and the light sensor
 	private static final double TILE_WIDTH = 30.48;
 	private static final int ROTATE_SPEED = 110;
 	private double TRACK;
@@ -33,15 +35,17 @@ public class FinalLightLocalizer implements Runnable {
 	private double dX;
 	private double dY;
 	private float first, second, third, fourth, angleCorrection;
+	private EV3GyroSensor gyroSensor;
 
 	/***
 	 * Constructor
 	 * 
 	 * 
-	 * @param leftMotor, rightMotor, TRACK, WHEEL_RAD
+	 * @param leftMotor,
+	 *            rightMotor, TRACK, WHEEL_RAD
 	 */
 	public FinalLightLocalizer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, double TRACK,
-			double WHEEL_RAD) {
+			double WHEEL_RAD, EV3GyroSensor gyroSensor) {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		EV3ColorSensor colour_sensor = MainClass.lineSensor;
@@ -50,6 +54,7 @@ public class FinalLightLocalizer implements Runnable {
 		this.TRACK = TRACK;
 		this.WHEEL_RAD = WHEEL_RAD;
 		this.startCorner = startCorner;
+		this.gyroSensor = gyroSensor;
 	}
 
 	public void run() {
@@ -59,12 +64,6 @@ public class FinalLightLocalizer implements Runnable {
 
 			// e1.printStackTrace();
 		}
-		// wait
-//		try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//
-//		}
 
 		do_localization();
 	}
@@ -83,42 +82,32 @@ public class FinalLightLocalizer implements Runnable {
 		double[] angles = new double[4];
 		boolean line = false;
 
-		//angleCorrection = odoData.prev_gyro_value;
-		
 		Sound.beep();
-		
+
 		leftMotor.setSpeed(ROTATE_SPEED);
 		rightMotor.setSpeed(ROTATE_SPEED);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
 		rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
-		
-		
+
 		prev_red = fetchUSData();
-		
+
 		while (numberLines < 4) {
 			curr_red = fetchUSData();
-			
-			if ( prev_red - curr_red > 3.5) { //3.5
-				
-//				angles[numberLines] = Math.abs(odoData.prev_gyro_value - angleCorrection);
+
+			if (prev_red - curr_red > 3.5) { // 3.5
+
 				angles[numberLines] = odoData.getXYT()[2];
-				//System.out.println(prev_red);
-				//System.out.println(curr_red);
+
 				Sound.beep();
 				numberLines++;
 			}
-			
+
 			prev_red = curr_red;
 		}
-		
+
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-		
-//		try {
-//			Thread.sleep(2000);
-//		} catch (InterruptedException e) {
-//
-//		}
+
 		// do calculations
 		double deltaX = angles[2] - angles[0];
 		double deltaY = angles[3] - angles[1];
@@ -126,47 +115,16 @@ public class FinalLightLocalizer implements Runnable {
 		double xZero = d * Math.cos(Math.toRadians(deltaY / 2));
 		double yZero = d * Math.cos(Math.toRadians(deltaX / 2));
 
-		
 		MainClass.navigation.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
 		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
-        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
-		//MainClass.navigation.turnTo(270, ROTATE_SPEED);
-		//odoData.setXYT(7 * TILE_WIDTH, TILE_WIDTH, 270);
+		rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
 
-		//odoData.setXYT(7, 1, theta);
-		/*
-		leftMotor.setSpeed(50);
-		rightMotor.setSpeed(50);
-		
-//		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, ((angles[0] + angles[2]) / 2) - odoData.getXYT()[2] - 60), true);
-//		rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, ((angles[0] + angles[2]) / 2) - odoData.getXYT()[2] - 60), false);
-		
-		
-		leftMotor.backward();
-		rightMotor.forward();
-		
-		while (true) {
-			curr_red = fetchUSData();
-			
-			if ( prev_red - curr_red > 3.5) {
-				Sound.beep();
-				leftMotor.stop(true);
-				rightMotor.stop(false);
-				break;
-			}
-			prev_red = curr_red;
-		}
-		
-		leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 3), true);
-		rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 3), false);
-		*/
-		
-		
-		/*
-		double[] position = { TILE_WIDTH, TILE_WIDTH, 0 };
-		boolean[] set = { true, true, true };
-		odoData.setPosition(position);
-		*/
+		// ---------------------------------------------------------------------------------
+
+		resetGyro(gyroSensor);
+
+		// ----------------------------------------------------------------------------------
+
 	}
 
 	/***
@@ -187,5 +145,9 @@ public class FinalLightLocalizer implements Runnable {
 	public static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
-	
+
+	public static void resetGyro(EV3GyroSensor G) {
+		G.reset();
+
+	}
 }
