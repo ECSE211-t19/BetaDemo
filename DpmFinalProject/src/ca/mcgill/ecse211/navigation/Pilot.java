@@ -196,12 +196,13 @@ public class Pilot implements Runnable {
 		int uRX = tunnel[3][0];
 
 		if ((uLX + uRX) / 2 > tree[0]) {
-
+			LCD.drawString("left", 0, 5);
 			navigation.travelTo(tree[0] + 1, tree[1], FORWARD_SPEED, ROTATE_SPEED);
 
 		}
 
 		else {
+			LCD.drawString("right", 0, 5);
 			navigation.travelTo(tree[0] - 1, tree[1], FORWARD_SPEED, ROTATE_SPEED);
 		}
 
