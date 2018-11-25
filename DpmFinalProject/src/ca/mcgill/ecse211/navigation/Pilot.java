@@ -197,19 +197,19 @@ public class Pilot implements Runnable {
 
 		if ((uLX + uRX) / 2 > tree[0]) {
 
-			navigation.travelTo(odometer.getXYT()[0] / TILE_WIDTH, tree[1], FORWARD_SPEED, ROTATE_SPEED);
 			navigation.travelTo(tree[0] + 1, tree[1], FORWARD_SPEED, ROTATE_SPEED);
 
 		}
 
 		else {
-			navigation.travelTo(odometer.getXYT()[0] / TILE_WIDTH, tree[1], FORWARD_SPEED, ROTATE_SPEED);
 			navigation.travelTo(tree[0] - 1, tree[1], FORWARD_SPEED, ROTATE_SPEED);
 		}
 
 	}
 
 	public void travelBackToTunnel() {
+		
+		navigation.travelTo(tree[0] + 1, tree[1], FORWARD_SPEED, ROTATE_SPEED);
 
 	}
 
@@ -239,6 +239,8 @@ public class Pilot implements Runnable {
 
 	public void travelBackToStartingCorner() {
 
+		navigation.travelTo(StartXY[0] , StartXY[1], FORWARD_SPEED, ROTATE_SPEED);
+		
 	}
 
 }
