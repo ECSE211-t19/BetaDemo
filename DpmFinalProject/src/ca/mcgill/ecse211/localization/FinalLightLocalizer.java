@@ -41,8 +41,7 @@ public class FinalLightLocalizer implements Runnable {
 	 * Constructor
 	 * 
 	 * 
-	 * @param leftMotor,
-	 *            rightMotor, TRACK, WHEEL_RAD
+	 * @param leftMotor, rightMotor, TRACK, WHEEL_RAD
 	 */
 	public FinalLightLocalizer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, double TRACK,
 			double WHEEL_RAD, EV3GyroSensor gyroSensor) {
@@ -82,32 +81,34 @@ public class FinalLightLocalizer implements Runnable {
 		double[] angles = new double[4];
 		boolean line = false;
 
+		
 		Sound.beep();
-
+		
 		leftMotor.setSpeed(ROTATE_SPEED);
 		rightMotor.setSpeed(ROTATE_SPEED);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
 		rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
-
+		
+		
 		prev_red = fetchUSData();
-
+		
 		while (numberLines < 4) {
 			curr_red = fetchUSData();
-
-			if (prev_red - curr_red > 3.5) { // 3.5
-
+			
+			if ( prev_red - curr_red > 3.5) { //3.5
+				
 				angles[numberLines] = odoData.getXYT()[2];
-
+				
 				Sound.beep();
 				numberLines++;
 			}
-
+			
 			prev_red = curr_red;
 		}
-
+		
 		leftMotor.stop(true);
 		rightMotor.stop(false);
-
+		
 		// do calculations
 		double deltaX = angles[2] - angles[0];
 		double deltaY = angles[3] - angles[1];
@@ -115,18 +116,106 @@ public class FinalLightLocalizer implements Runnable {
 		double xZero = d * Math.cos(Math.toRadians(deltaY / 2));
 		double yZero = d * Math.cos(Math.toRadians(deltaX / 2));
 
+		
 		MainClass.navigation.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
 		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
-		rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
-
-		// ---------------------------------------------------------------------------------
-
-		resetGyro(gyroSensor);
-
-		// ----------------------------------------------------------------------------------
-
+        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
+        
+        
+        //---------------------------------------------------------------------------------
+      
+   
+        resetGyro(gyroSensor);
+        
+        
+        //----------------------------------------------------------------------------------
+        
 	}
 
+public void doNavLocalization(double toX, double toY) {
+		
+		double[] currXYT = odoData.getXYT();
+		
+		//TODO hardcode turn
+		
+		
+		odoData.setTheta(0);
+		
+		int numberLines = 0;
+		double[] angles = new double[4];
+		
+		//Sound.beep();
+		
+		leftMotor.setSpeed(ROTATE_SPEED);
+		rightMotor.setSpeed(ROTATE_SPEED);
+		leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
+		rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
+		
+		
+		prev_red = fetchUSData();
+		
+		while (numberLines < 4) {
+			curr_red = fetchUSData();
+			
+			if ( prev_red - curr_red > 3.5) { //3.5
+				
+				angles[numberLines] = odoData.getXYT()[2];
+				//System.out.println(prev_red);
+				//System.out.println(curr_red);
+				Sound.beep();
+				numberLines++;
+			}
+			
+			prev_red = curr_red;
+		}
+		
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		
+		
+		// do calculations
+		double deltaX = angles[2] - angles[0];
+		double deltaY = angles[3] - angles[1];
+
+		double xZero = d * Math.cos(Math.toRadians(deltaY / 2));
+		double yZero = d * Math.cos(Math.toRadians(deltaX / 2));
+
+		
+		MainClass.navigation.travelTo(xZero + currXYT[0], yZero + currXYT[1], ROTATE_SPEED, ROTATE_SPEED);
+		
+		
+		
+		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
+        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
+        
+        
+        
+        odoData.setX(toX);
+        odoData.setY(toY);
+        
+        if (currXYT[2] > 315.0 || currXYT[2] < 45.0)
+        {
+        	odoData.setTheta(0);
+        }
+        else if (currXYT[2] > 45.0 && currXYT[2] < 135.0)
+        {
+        	odoData.setTheta(90);
+        }
+        else if (currXYT[2] > 135.0 && currXYT[2] < 225.0)
+        {
+        	odoData.setTheta(180);
+        }
+        else if (currXYT[2] > 225.0 && currXYT[2] < 315.0)
+        {
+        	odoData.setTheta(270);
+        }
+        
+	}
+	
+	
+	
+	
+	
 	/***
 	 * This method fetches the US data
 	 * 
@@ -145,9 +234,8 @@ public class FinalLightLocalizer implements Runnable {
 	public static int convertAngle(double radius, double width, double angle) {
 		return convertDistance(radius, Math.PI * width * angle / 360.0);
 	}
-
 	public static void resetGyro(EV3GyroSensor G) {
-		G.reset();
-
+	G.reset();
+	
 	}
 }

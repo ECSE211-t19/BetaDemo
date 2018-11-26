@@ -51,7 +51,7 @@ public class MainClass {
 		ColorDisplay colorDisplay = new ColorDisplay(lcd);
 		UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 
-		FinalLightLocalizer FinalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
+		 FinalLightLocalizer FinalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
 				gyroSensor);
 		Wifi wifi = new Wifi();
 		navigation = new Navigation(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
@@ -64,14 +64,14 @@ public class MainClass {
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
 
-		usLocalizer.run();
+		//usLocalizer.run();
 
-		FinalLightLocalizer.run();
-		gyroSensor.reset();
-		Sound.beep();
+		//FinalLightLocalizer.run();
+		//gyroSensor.reset();
+		//Sound.beep();
 		pilot.run();
 		Sound.beep();
-		FinalLightLocalizer.run();
+		//FinalLightLocalizer.run();
 		// lightLocalizer.run();
 		// Sound.beep();
 

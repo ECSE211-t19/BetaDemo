@@ -1,5 +1,6 @@
 package ca.mcgill.ecse211.navigation;
 
+import ca.mcgill.ecse211.localization.FinalLightLocalizer;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerData;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
@@ -26,6 +27,7 @@ public class Pilot implements Runnable {
 	int tree[];
 	int team;
 	Navigation navigation;
+	
 
 	public Pilot(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, final double TRACK,
 			final double WHEEL_RAD, Wifi wifi, Navigation navigation) throws OdometerExceptions {
@@ -42,10 +44,11 @@ public class Pilot implements Runnable {
 		this.tunnel = wifi.getTunnel();
 		this.tree = wifi.getRingSet();
 		odoData = OdometerData.getOdometerData();
-		odoData.setXYT(0, 0, 0);
+		//odoData.setXYT(0, 0, 0);
 
 		this.navigation = navigation;
 
+		
 	}
 
 	public void run() {
@@ -80,7 +83,7 @@ public class Pilot implements Runnable {
 		}
 		travelToTunnel();
 		travelThroughTunnel();
-		travelToRingSet();
+		//travelToRingSet();
 	}
 
 	/**
@@ -168,13 +171,41 @@ public class Pilot implements Runnable {
 	public void travelThroughTunnel() {
 
 		if (wifi.isTunnelVertical()) {
-			LCD.drawString("lol", 0, 3);
+			//LCD.drawString("lol", 0, 3);
 
-			navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-					ROTATE_SPEED);
-			navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-					ROTATE_SPEED);
+			switch (StartingCorner) {
 
+			case 0:
+				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 1:
+				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+
+				return;
+
+			case 2:
+				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 3:
+				navigation.travelTo((tunnel[0][0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			}
+			
 		}
 		// assure that the robot is pointing 270
 		else {
@@ -192,7 +223,7 @@ public class Pilot implements Runnable {
 	 * 
 	 */
 	public void travelToRingSet() {
-		int uLX = tunnel[2][0];
+		int uLX = tunnel[0][0];
 		int uRX = tunnel[3][0];
 
 		if ((uLX + uRX) / 2 > tree[0]) {

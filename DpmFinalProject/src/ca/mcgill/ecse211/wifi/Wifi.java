@@ -10,7 +10,7 @@ import lejos.hardware.lcd.LCD;
 public class Wifi {
 
   // ** Set these as appropriate for your team and current situation **
-  private static final String SERVER_IP = "192.168.2.17";
+  private static final String SERVER_IP = "192.168.2.18";
   private static final int TEAM_NUMBER = 19;
   private Map data; 
   private int team;
