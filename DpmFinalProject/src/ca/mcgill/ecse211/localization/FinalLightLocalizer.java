@@ -42,11 +42,13 @@ public class FinalLightLocalizer implements Runnable {
 	 * 
 	 * 
 	 * @param leftMotor, rightMotor, TRACK, WHEEL_RAD
+	 * @throws OdometerExceptions 
 	 */
 	public FinalLightLocalizer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, double TRACK,
-			double WHEEL_RAD, EV3GyroSensor gyroSensor) {
+			double WHEEL_RAD, EV3GyroSensor gyroSensor) throws OdometerExceptions {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
+		this.odoData = Odometer.getOdometer();
 		EV3ColorSensor colour_sensor = MainClass.lineSensor;
 		this.color_sample_provider = colour_sensor.getMode("ColorID");
 		this.color_samples = new float[colour_sensor.sampleSize()];
@@ -57,13 +59,7 @@ public class FinalLightLocalizer implements Runnable {
 	}
 
 	public void run() {
-		try {
-			this.odoData = Odometer.getOdometer();
-		} catch (OdometerExceptions e1) {
-
-			// e1.printStackTrace();
-		}
-
+		
 		do_localization();
 	}
 
@@ -136,10 +132,12 @@ public void doNavLocalization(double toX, double toY) {
 		
 		double[] currXYT = odoData.getXYT();
 		
-		//TODO hardcode turn
-		
-		
 		odoData.setTheta(0);
+		
+		// hardcode turn
+		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 20), true);
+        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 20), false);
+		
 		
 		int numberLines = 0;
 		double[] angles = new double[4];

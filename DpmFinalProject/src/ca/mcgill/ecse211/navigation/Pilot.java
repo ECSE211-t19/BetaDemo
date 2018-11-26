@@ -27,9 +27,10 @@ public class Pilot implements Runnable {
 	int tree[];
 	int team;
 	Navigation navigation;
+	FinalLightLocalizer finalLightLocalizer;
 
 	public Pilot(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, final double TRACK,
-			final double WHEEL_RAD, Wifi wifi, Navigation navigation) throws OdometerExceptions {
+			final double WHEEL_RAD, Wifi wifi, Navigation navigation, FinalLightLocalizer finalLightLocalizer) throws OdometerExceptions {
 
 		this.odometer = Odometer.getOdometer();
 		this.leftMotor = leftMotor;
@@ -45,6 +46,7 @@ public class Pilot implements Runnable {
 		odoData = OdometerData.getOdometerData();
 
 		this.navigation = navigation;
+		this.finalLightLocalizer = finalLightLocalizer;
 
 	}
 
@@ -79,6 +81,7 @@ public class Pilot implements Runnable {
 			break;
 		}
 
+		
 		travelToTunnel();
 		travelThroughTunnel();
 		// travelToRingSet();
@@ -272,11 +275,11 @@ public class Pilot implements Runnable {
 		int uRX = tunnel[3][0];
 
 		if ((uLX + uRX) / 2 > tree[0]) {
-			MainClass.finalLightLocalizer.doNavLocalization(tree[0] + 1, tree[1]);
+			finalLightLocalizer.doNavLocalization(tree[0] + 1, tree[1]);
 		}
 
 		else {
-			MainClass.finalLightLocalizer.doNavLocalization(tree[0] - 1, tree[1]);
+			finalLightLocalizer.doNavLocalization(tree[0] - 1, tree[1]);
 		}
 
 	}

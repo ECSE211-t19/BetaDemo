@@ -36,7 +36,6 @@ public class MainClass {
 	public static final double WHEEL_RAD = 2.07;
 	public static final double TRACK = 10.6; // 66
 	public Odometer odometer;
-	public static FinalLightLocalizer finalLightLocalizer;
 	public static ArmController armController;
 	public static Navigation navigation;
 	public static Pilot pilot;
@@ -52,11 +51,11 @@ public class MainClass {
 		ColorDisplay colorDisplay = new ColorDisplay(lcd);
 		UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 
-		finalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
+		FinalLightLocalizer finalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
 				gyroSensor);
 		Wifi wifi = new Wifi();
 		navigation = new Navigation(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
-		pilot = new Pilot(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi, navigation);
+		pilot = new Pilot(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi, navigation, finalLightLocalizer);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
 
 		// Start odometer and display threads
