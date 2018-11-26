@@ -27,7 +27,6 @@ public class Pilot implements Runnable {
 	int tree[];
 	int team;
 	Navigation navigation;
-	
 
 	public Pilot(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, final double TRACK,
 			final double WHEEL_RAD, Wifi wifi, Navigation navigation) throws OdometerExceptions {
@@ -44,11 +43,9 @@ public class Pilot implements Runnable {
 		this.tunnel = wifi.getTunnel();
 		this.tree = wifi.getRingSet();
 		odoData = OdometerData.getOdometerData();
-		//odoData.setXYT(0, 0, 0);
 
 		this.navigation = navigation;
 
-		
 	}
 
 	public void run() {
@@ -81,9 +78,13 @@ public class Pilot implements Runnable {
 			odoData.setXYT(StartXY[0] * TILE_WIDTH, StartXY[1] * TILE_WIDTH, 90);
 			break;
 		}
+
 		travelToTunnel();
 		travelThroughTunnel();
-		//travelToRingSet();
+		// travelToRingSet();
+
+		localizeBeforeRingSet();
+
 	}
 
 	/**
@@ -128,7 +129,7 @@ public class Pilot implements Runnable {
 				return;
 			}
 		} else {
-			 LCD.drawString("right way", 0, 4);
+			LCD.drawString("right way", 0, 4);
 
 			switch (StartingCorner) {
 
@@ -140,7 +141,7 @@ public class Pilot implements Runnable {
 				return;
 
 			case 1:
-				
+
 				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
@@ -172,14 +173,14 @@ public class Pilot implements Runnable {
 	public void travelThroughTunnel() {
 
 		if (wifi.isTunnelVertical()) {
-			//LCD.drawString("lol", 0, 3);
+			// LCD.drawString("lol", 0, 3);
 
 			switch (StartingCorner) {
 
 			case 0:
-				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
@@ -206,43 +207,43 @@ public class Pilot implements Runnable {
 				return;
 
 			}
-			
+
 		}
-		
+
 		else {
 			LCD.drawString("no vert", 0, 4);
 			switch (StartingCorner) {
 
 			case 0:
-				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 1:
-				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 
 				return;
 
 			case 2:
-				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 3:
-				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[0][0] - 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[0][0] - 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 			}
-			}
+		}
 	}
 
 	/**
@@ -266,40 +267,171 @@ public class Pilot implements Runnable {
 
 	}
 
+	public void localizeBeforeRingSet() {
+		int uLX = tunnel[0][0];
+		int uRX = tunnel[3][0];
+
+		if ((uLX + uRX) / 2 > tree[0]) {
+			MainClass.finalLightLocalizer.doNavLocalization(tree[0] + 1, tree[1]);
+		}
+
+		else {
+			MainClass.finalLightLocalizer.doNavLocalization(tree[0] - 1, tree[1]);
+		}
+
+	}
+
 	public void travelBackToTunnel() {
 		
-		navigation.travelTo(tree[0] + 1, tree[1], FORWARD_SPEED, ROTATE_SPEED);
+		if (wifi.isTunnelVertical()) {
+			
+			switch (StartingCorner) {
+
+			case 0:
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tree[1]) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 1:
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tree[1]) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+
+				return;
+
+			case 2:
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tree[1]) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[0][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 3:
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tree[1]) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[0][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+			}
+		} else {
+			switch (StartingCorner) {
+
+			case 0:
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 1:
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+
+				return;
+
+			case 2:
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 3:
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+			}
+			
+		}
 
 	}
 
 	public void travelBackThroughTunnel() {
 
 		if (wifi.isTunnelVertical()) {
-			LCD.drawString("lhoriz", 0, 3);
+			switch (StartingCorner) {
 
-			navigation.travelTo((tunnel[1][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-					ROTATE_SPEED);
-			navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-					ROTATE_SPEED);
+			case 0:
+				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 1:
+				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+
+				return;
+
+			case 2:
+				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[1][0] + 1) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 3:
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[0][0] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[0][0] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			}
 
 		}
-		// assure that the robot is pointing 270
+
 		else {
 			LCD.drawString("no vert", 0, 4);
-			leftMotor.rotate(-navigation.convertAngle(WHEEL_RAD, TRACK, 90), true);
-			rightMotor.rotate(navigation.convertAngle(WHEEL_RAD, TRACK, 90), false);
-			navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
-					ROTATE_SPEED);
-			navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-					ROTATE_SPEED);
+			switch (StartingCorner) {
+
+			case 0:
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 1:
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+
+				return;
+
+			case 2:
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+
+			case 3:
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+						ROTATE_SPEED);
+				return;
+			}
 		}
 
 	}
 
 	public void travelBackToStartingCorner() {
 
-		navigation.travelTo(StartXY[0] , StartXY[1], FORWARD_SPEED, ROTATE_SPEED);
-		
+		navigation.travelTo((StartXY[0] + 10) * TILE_WIDTH, (StartXY[1] + 10) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+
 	}
 
 }
