@@ -81,9 +81,13 @@ public class Pilot implements Runnable {
 			odoData.setXYT(StartXY[0] * TILE_WIDTH, StartXY[1] * TILE_WIDTH, 90);
 			break;
 		}
+		
 		travelToTunnel();
 		travelThroughTunnel();
 		//travelToRingSet();
+		
+		localizeBeforeRingSet();
+		
 	}
 
 	/**
@@ -238,7 +242,21 @@ public class Pilot implements Runnable {
 		}
 
 	}
+	
+	public void localizeBeforeRingSet() {
+		int uLX = tunnel[0][0];
+		int uRX = tunnel[3][0];
+		
+		if ((uLX + uRX) / 2 > tree[0]) {
+			MainClass.finalLightLocalizer.doNavLocalization(tree[0] + 1, tree[1]);
+		}
 
+		else {
+			MainClass.finalLightLocalizer.doNavLocalization(tree[0] - 1, tree[1]);
+		}
+		
+	}
+	
 	public void travelBackToTunnel() {
 		
 		navigation.travelTo(tree[0] + 1, tree[1], FORWARD_SPEED, ROTATE_SPEED);
