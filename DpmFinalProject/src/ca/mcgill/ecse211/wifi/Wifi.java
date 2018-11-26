@@ -237,39 +237,15 @@ public class Wifi {
 	public boolean isTunnelVertical() {
 		
 		team = getTeam();
-		//int llx = ((Long) data.get("Island_LL_x")).intValue();
 		int llx, urx;
-		//switch (team) {
-		/*case 1:
-			int urxR = ((Long) data.get("TNR_UR_x")).intValue();
-			if (urxR <= llx) {
-				return true;
-			} else {
-				return false;
-			}
-		case 0:
-			int urxG = ((Long) data.get("TNG_UR_x")).intValue();
-			if (urxG <= llx) {
-				return true;
-			} else {
-				return false;
-			}
-		default: return false;
-		}
-	
+		int ilx = ((Long) data.get("Island_LL_x")).intValue();
 		
-		
-		if (urx <= llx) {
-			return true;
-		} else {
-			return false;
-		}*/
 		switch (team) {
 		case 1:
 			llx = ((Long) data.get("TNR_LL_x")).intValue();
 			urx = ((Long) data.get("TNR_UR_x")).intValue();
 
-			if(urx-llx == 1) {
+			if(urx > ilx) {
 				return true;
 			}
 			else {
@@ -279,7 +255,7 @@ public class Wifi {
 			llx = ((Long) data.get("TNG_LL_x")).intValue();
 			urx = ((Long) data.get("TNG_UR_x")).intValue();
 
-			if(urx-llx == 1) {
+			if(urx > ilx) {
 				return true;
 			}
 			else {
