@@ -10,7 +10,7 @@ import lejos.hardware.lcd.LCD;
 public class Wifi {
 
   // ** Set these as appropriate for your team and current situation **
-  private static final String SERVER_IP = "192.168.2.18";
+  private static final String SERVER_IP = "192.168.2.49";
   private static final int TEAM_NUMBER = 19;
   private Map data; 
   private int team;
@@ -239,28 +239,46 @@ public class Wifi {
 		team = getTeam();
 		int llx, urx;
 		int ilx = ((Long) data.get("Island_LL_x")).intValue();
-		
+		int iux = ((Long) data.get("Island_UR_x")).intValue();
 		switch (team) {
 		case 1:
-			llx = ((Long) data.get("TNR_LL_x")).intValue();
-			urx = ((Long) data.get("TNR_UR_x")).intValue();
-
+			llx = ((Long) data.get("Red_LL_x")).intValue();
+			urx = ((Long) data.get("Red_UR_x")).intValue();
+			
+			if ( getStartingCorner(team) == 0 || getStartingCorner(team) == 3)
 			if(urx > ilx) {
-				return true;
+				return true; 
 			}
 			else {
 				return false;
+			}
+			
+			else {
+				if ( llx > iux) {
+					return false;
+				} else {
+					return true;
+				}
 			}
 		case 0:
-			llx = ((Long) data.get("TNG_LL_x")).intValue();
-			urx = ((Long) data.get("TNG_UR_x")).intValue();
+			llx = ((Long) data.get("Green_LL_x")).intValue();
+			urx = ((Long) data.get("Green_UR_x")).intValue();
 
-			if(urx > ilx) {
-				return true;
-			}
-			else {
-				return false;
-			}
+			if ( getStartingCorner(team) == 0 || getStartingCorner(team) == 3)
+				if(urx > ilx) {
+					return true; 
+				}
+				else {
+					return false;
+				}
+				
+				else {
+					if ( llx > iux) {
+						return false;
+					} else {
+						return true;
+					}
+				}
 			
 		default: return false;
 
