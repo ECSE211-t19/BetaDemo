@@ -135,8 +135,8 @@ public void doNavLocalization(double toX, double toY) {
 		odoData.setTheta(0);
 		
 		// hardcode turn
-		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 20), true);
-        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 20), false);
+		leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 20), true);
+        rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 20), false);
 		
 		
 		int numberLines = 0;
@@ -183,11 +183,35 @@ public void doNavLocalization(double toX, double toY) {
 		
 		
 		
-		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
-        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
+//		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
+//        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
         
+		leftMotor.setSpeed(50);
+		rightMotor.setSpeed(50);
+		leftMotor.backward();
+		rightMotor.forward();
+		
+		prev_red = fetchUSData();
+		
+		while (numberLines < 4) {
+			curr_red = fetchUSData();
+			
+			if ( prev_red - curr_red > 3.5) { //3.5
+				
+				Sound.beep();
+				break;
+			}
+			
+			prev_red = curr_red;
+		}
+		
+		leftMotor.stop(true);
+		rightMotor.stop(false);
         
-        
+		
+		
+		
+		
         odoData.setX(toX);
         odoData.setY(toY);
         
