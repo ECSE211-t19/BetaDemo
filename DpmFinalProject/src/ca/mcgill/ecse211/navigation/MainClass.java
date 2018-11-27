@@ -64,19 +64,17 @@ public class MainClass {
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
 
-		//usLocalizer.run();
+		usLocalizer.run();
 
-		//FinalLightLocalizer.run();
-		//gyroSensor.reset();
-		//Sound.beep();
+		finalLightLocalizer.run();
+		gyroSensor.reset();
+		Sound.beep();
 		pilot.run();
 		Sound.beep();
-		//FinalLightLocalizer.run();
-		// lightLocalizer.run();
-		// Sound.beep();
-
-		// Sound.beep();
-		// armController.run();
+		armController.run();
+		pilot.travelBackToTunnel();
+		pilot.travelBackThroughTunnel();
+		pilot.travelBackToStartingCorner();
 
 		// }
 

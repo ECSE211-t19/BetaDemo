@@ -135,8 +135,8 @@ public void doNavLocalization(double toX, double toY) {
 		odoData.setTheta(0);
 		
 		// hardcode turn
-		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 20), true);
-        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 20), false);
+		leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 25), true);
+        rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 25), false);
 		
 		
 		int numberLines = 0;
