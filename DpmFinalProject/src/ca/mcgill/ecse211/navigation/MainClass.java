@@ -71,7 +71,7 @@ public class MainClass {
 		Sound.beep();
 		pilot.run();
 		Sound.beep();
-		armController.run();
+		armController.captureRing();
 		pilot.travelBackToTunnel();
 		pilot.travelBackThroughTunnel();
 		pilot.travelBackToStartingCorner();

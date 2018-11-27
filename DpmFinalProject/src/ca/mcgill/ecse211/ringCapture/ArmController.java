@@ -54,7 +54,7 @@ public class ArmController {
 	/**
 	 * perform moveArm() and moveRobot() routines for first level. If no ring was detected, move back and repeat same process for second level.
 	 */
-	public void run() {
+	public void captureRing() {
 
 		//create new ring detection object
 		ringColours = new RingColour(); //change place in code depending on when you want to activate light sensor.

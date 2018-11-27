@@ -178,8 +178,6 @@ public class Pilot implements Runnable {
 	public void travelThroughTunnel() {
 
 		if (wifi.isTunnelVertical()) {
-			// LCD.drawString("lol", 0, 3);
-
 			switch (StartingCorner) {
 
 			case 0:
