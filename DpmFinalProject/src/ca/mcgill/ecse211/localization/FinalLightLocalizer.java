@@ -23,7 +23,7 @@ public class FinalLightLocalizer implements Runnable {
 	private float light_value;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private static final double d = 13; // distance between the center of the robot and the light sensor
+	private static final double d = 13.4; // distance between the center of the robot and the light sensor
 	private static final double TILE_WIDTH = 30.48;
 	private static final int ROTATE_SPEED = 110;
 	private double TRACK;

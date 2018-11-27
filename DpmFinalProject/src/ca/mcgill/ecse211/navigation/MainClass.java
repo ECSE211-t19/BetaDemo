@@ -34,7 +34,7 @@ public class MainClass {
 
 	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
 	public static final double WHEEL_RAD = 2.07;
-	public static final double TRACK = 10.6; // 66
+	public static final double TRACK = 10.7; // 66
 	public Odometer odometer;
 	public static ArmController armController;
 	public static Navigation navigation;
