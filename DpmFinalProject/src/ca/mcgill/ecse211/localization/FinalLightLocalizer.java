@@ -32,10 +32,10 @@ public class FinalLightLocalizer implements Runnable {
 	private float prev_red;
 	private float curr_red;
 	private int startCorner;
-	private double dX;
-	private double dY;
+	private double dX, dY, deltaX, deltaY, xZero, yZero;
 	private float first, second, third, fourth, angleCorrection;
 	private EV3GyroSensor gyroSensor;
+	private Navigation navigation;
 
 	/***
 	 * Constructor
@@ -45,7 +45,7 @@ public class FinalLightLocalizer implements Runnable {
 	 * @throws OdometerExceptions 
 	 */
 	public FinalLightLocalizer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, double TRACK,
-			double WHEEL_RAD, EV3GyroSensor gyroSensor) throws OdometerExceptions {
+			double WHEEL_RAD, EV3GyroSensor gyroSensor, Navigation navigation) throws OdometerExceptions {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.odoData = Odometer.getOdometer();
@@ -56,6 +56,7 @@ public class FinalLightLocalizer implements Runnable {
 		this.WHEEL_RAD = WHEEL_RAD;
 		this.startCorner = startCorner;
 		this.gyroSensor = gyroSensor;
+		this.navigation = navigation;
 	}
 
 	public void run() {
@@ -129,112 +130,288 @@ public class FinalLightLocalizer implements Runnable {
 	}
 
 public void doNavLocalization(double toX, double toY) {
-		
-		double[] currXYT = odoData.getXYT();
-		
-		odoData.setTheta(0);
-		
-		// hardcode turn
-
-		leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 25), true);
-        rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 25), false);
-
-		
-		
-		int numberLines = 0;
-		double[] angles = new double[4];
-		
-		//Sound.beep();
-		
-		leftMotor.setSpeed(ROTATE_SPEED);
-		rightMotor.setSpeed(ROTATE_SPEED);
-		leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
-		rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
-		
-		
-		prev_red = fetchUSData();
-		
-		while (numberLines < 4) {
-			curr_red = fetchUSData();
-			
-			if ( prev_red - curr_red > 3.5) { //3.5
-				
-				angles[numberLines] = odoData.getXYT()[2];
-				//System.out.println(prev_red);
-				//System.out.println(curr_red);
-				Sound.beep();
-				numberLines++;
-			}
-			
-			prev_red = curr_red;
-		}
-		
-		leftMotor.stop(true);
-		rightMotor.stop(false);
-		
-		
-		// do calculations
-		double deltaX = angles[2] - angles[0];
-		double deltaY = angles[3] - angles[1];
-
-		double xZero = d * Math.cos(Math.toRadians(deltaY / 2));
-		double yZero = d * Math.cos(Math.toRadians(deltaX / 2));
-
-		
-		MainClass.navigation.travelTo(xZero + currXYT[0], yZero + currXYT[1], ROTATE_SPEED, ROTATE_SPEED);
-		
-		
-		
-//		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
-//        rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
         
-		leftMotor.setSpeed(50);
-		rightMotor.setSpeed(50);
-		leftMotor.backward();
-		rightMotor.forward();
-		
-		prev_red = fetchUSData();
-		
-		while (numberLines < 4) {
-			curr_red = fetchUSData();
-			
-			if ( prev_red - curr_red > 3.5) { //3.5
-				
-				Sound.beep();
-				break;
-			}
-			
-			prev_red = curr_red;
-		}
-		
-		leftMotor.stop(true);
-		rightMotor.stop(false);
+        int case_no = 0;
         
-		
-		
-		
-		
+        double[] currXYT = odoData.getXYT();
+        
+        // straighten the robot out
+        if (currXYT[2] > 315.0 || currXYT[2] < 45.0)
+        {
+            if (currXYT[2] >= 0)
+            {
+                navigation.turnTo(-currXYT[2], ROTATE_SPEED);
+            }
+            else
+            {
+                navigation.turnTo(360.0 - currXYT[2], ROTATE_SPEED);
+            }
+        }
+        else if (currXYT[2] > 45.0 && currXYT[2] < 135.0)
+        {
+            navigation.turnTo( 90.0 - currXYT[2], ROTATE_SPEED);
+        }
+        else if (currXYT[2] > 135.0 && currXYT[2] < 225.0)
+        {
+            navigation.turnTo( 180.0 - currXYT[2], ROTATE_SPEED);
+        }
+        else if (currXYT[2] > 225.0 && currXYT[2] < 315.0)
+        {
+            navigation.turnTo( 270.0 - currXYT[2], ROTATE_SPEED);
+        }
+        
+        
+        odoData.setTheta(0);
+        
+        // Determine four cases of localization, four different quadrants
+        if (currXYT[0] > toX && currXYT[1] > toY)
+        {
+            case_no = 1;
+        }
+        else if (currXYT[0] <= toX && currXYT[1] > toY)
+        {
+            case_no = 2;
+        }
+        else if (currXYT[0] <= toX && currXYT[1] <= toY)
+        {
+            case_no = 3;
+        }
+        else if (currXYT[0] > toX && currXYT[1] <= toY)
+        {
+            case_no = 4;
+        }
+        
+//      // hardcode turn
+//
+//      leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, 25), true);
+//        rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, 25), false);
+        
+        
+        int numberLines = 0;
+        double[] angles = new double[4];
+        
+        leftMotor.setSpeed(ROTATE_SPEED);
+        rightMotor.setSpeed(ROTATE_SPEED);
+        
+        //different turning orientation per case
+        switch (case_no)
+        {
+            case 1:
+            case 4:
+                leftMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
+                rightMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
+                break;
+            case 2:
+            case 3:
+                leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
+                rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
+                break;
+                
+            default:
+            	Sound.beepSequenceUp();
+            	break;
+        }
+        
+        
+        // detect lines
+        prev_red = fetchUSData();
+        
+        while (numberLines < 4) {
+            curr_red = fetchUSData();
+            
+            if ( prev_red - curr_red > 3.5) { //3.5
+                
+                angles[numberLines] = odoData.getXYT()[2];
+                Sound.beep();
+                numberLines++;
+            }
+            
+            prev_red = curr_red;
+        }
+        
+        leftMotor.stop(true);
+        rightMotor.stop(false);
+        
+        
+        switch (case_no) {
+            case 1:
+                // do calculations
+                deltaX = 360 - (angles[0] - angles[2]);
+                deltaY = angles[1] - angles[3];
+                xZero = d * Math.cos(Math.toRadians(deltaY / 2));
+                yZero = d * Math.cos(Math.toRadians(deltaX / 2));
+                
+                navigation.travelTo(currXYT[0] - xZero, currXYT[1] - yZero, ROTATE_SPEED, ROTATE_SPEED);
+                
+                
+                
+//              leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), true);
+//              rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), false);
+                
+                leftMotor.setSpeed(50);
+                rightMotor.setSpeed(50);
+                leftMotor.forward();
+                rightMotor.backward();
+                
+                prev_red = fetchUSData();
+                
+                while (numberLines < 6) {
+                    curr_red = fetchUSData();
+                    
+                    if ( prev_red - curr_red > 3.5) { //3.5
+                        
+                        Sound.beep();
+                        break;
+                    }
+                    
+                    prev_red = curr_red;
+                }
+                
+                leftMotor.stop(true);
+                rightMotor.stop(false);
+                
+                break;
+                
+            case 2:
+                // do calculations
+                deltaX = 360 - (angles[2] - angles[0]);
+                deltaY = angles[3] - angles[1];
+                xZero = d * Math.cos(Math.toRadians(deltaY / 2));
+                yZero = d * Math.cos(Math.toRadians(deltaX / 2));
+                
+                navigation.travelTo(currXYT[0] + xZero, currXYT[1] - yZero, ROTATE_SPEED, ROTATE_SPEED);
+                
+//              leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), true);
+//              rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), false);
+                
+                leftMotor.setSpeed(50);
+                rightMotor.setSpeed(50);
+                leftMotor.backward();
+                rightMotor.forward();
+                
+                prev_red = fetchUSData();
+                
+                while (numberLines < 6) {
+                    curr_red = fetchUSData();
+                    
+                    if ( prev_red - curr_red > 3.5) { //3.5
+                        
+                        Sound.beep();
+                        break;
+                    }
+                    
+                    prev_red = curr_red;
+                }
+                
+                leftMotor.stop(true);
+                rightMotor.stop(false);
+                
+                break;
+                
+            case 3:
+                // do calculations
+                deltaX = angles[2] - angles[0];
+                deltaY = angles[3] - angles[1];
+                xZero = d * Math.cos(Math.toRadians(deltaY / 2));
+                yZero = d * Math.cos(Math.toRadians(deltaX / 2));
+                
+                navigation.travelTo(currXYT[0] + xZero, currXYT[1] + yZero, ROTATE_SPEED, ROTATE_SPEED);
+                
+                
+                
+//              leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
+//              rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
+                
+                leftMotor.setSpeed(50);
+                rightMotor.setSpeed(50);
+                leftMotor.backward();
+                rightMotor.forward();
+                
+                prev_red = fetchUSData();
+                
+                while (numberLines < 5) {
+                    curr_red = fetchUSData();
+                    
+                    if ( prev_red - curr_red > 3.5) { //3.5
+                        
+                        Sound.beep();
+                        break;
+                    }
+                    
+                    prev_red = curr_red;
+                }
+                
+                leftMotor.stop(true);
+                rightMotor.stop(false);
+                
+                break;
+                
+            case 4:
+                // do calculations
+                deltaX = angles[0] - angles[2];
+                deltaY = angles[1] - angles[3];
+                xZero = d * Math.cos(Math.toRadians(deltaY / 2));
+                yZero = d * Math.cos(Math.toRadians(deltaX / 2));
+                
+                navigation.travelTo(currXYT[0] - xZero, currXYT[1] + yZero, ROTATE_SPEED, ROTATE_SPEED);
+                
+                
+                
+//              leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
+//              rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
+                
+                leftMotor.setSpeed(50);
+                rightMotor.setSpeed(50);
+                leftMotor.forward();
+                rightMotor.backward();
+                
+                prev_red = fetchUSData();
+                
+                while (numberLines < 5) {
+                    curr_red = fetchUSData();
+                    
+                    if ( prev_red - curr_red > 3.5) { //3.5
+                        
+                        Sound.beep();
+                        break;
+                    }
+                    
+                    prev_red = curr_red;
+                }
+                
+                leftMotor.stop(true);
+                rightMotor.stop(false);
+                
+                break;
+                
+            default:
+            	Sound.beepSequenceUp();
+            	break;
+        
+        }
+        
+        
         odoData.setX(toX);
         odoData.setY(toY);
         
         if (currXYT[2] > 315.0 || currXYT[2] < 45.0)
         {
-        	odoData.setTheta(0);
+            odoData.setTheta(0);
         }
         else if (currXYT[2] > 45.0 && currXYT[2] < 135.0)
         {
-        	odoData.setTheta(90);
+            odoData.setTheta(90);
         }
         else if (currXYT[2] > 135.0 && currXYT[2] < 225.0)
         {
-        	odoData.setTheta(180);
+            odoData.setTheta(180);
         }
         else if (currXYT[2] > 225.0 && currXYT[2] < 315.0)
         {
-        	odoData.setTheta(270);
+            odoData.setTheta(270);
         }
         
-	}
+    }
 	
 	
 	

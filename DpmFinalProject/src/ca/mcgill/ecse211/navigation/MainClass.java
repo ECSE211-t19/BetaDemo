@@ -51,10 +51,10 @@ public class MainClass {
 		ColorDisplay colorDisplay = new ColorDisplay(lcd);
 		UltrasonicLocalizer usLocalizer = new UltrasonicLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD);
 
-		FinalLightLocalizer finalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
-				gyroSensor);
 		Wifi wifi = new Wifi();
 		navigation = new Navigation(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
+		FinalLightLocalizer finalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
+				gyroSensor, navigation);
 		pilot = new Pilot(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi, navigation, finalLightLocalizer);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
 
