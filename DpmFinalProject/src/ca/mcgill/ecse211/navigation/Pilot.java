@@ -139,9 +139,9 @@ public class Pilot implements Runnable {
 			switch (StartingCorner) {
 
 			case 0:
-				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
@@ -149,14 +149,14 @@ public class Pilot implements Runnable {
 
 				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 2:
 				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
@@ -240,9 +240,9 @@ public class Pilot implements Runnable {
 				return;
 
 			case 3:
-				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 			}
@@ -333,14 +333,14 @@ public class Pilot implements Runnable {
 			case 0:
 				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tree[1]) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[2][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 1:
 				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tree[1]) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[2][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 
 				return;
@@ -363,29 +363,29 @@ public class Pilot implements Runnable {
 			switch (StartingCorner) {
 
 			case 0:
-				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 1:
-				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 
 				return;
 
 			case 2:
-				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 3:
-				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
@@ -439,31 +439,31 @@ public class Pilot implements Runnable {
 			switch (StartingCorner) {
 
 			case 0:
-				navigation.travelTo((tunnel[0][1] + 0.5) * TILE_WIDTH, (tunnel[0][0] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][0] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][1] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][0] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 1:
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][1] + 1) * TILE_WIDTH, (tunnel[0][0] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][1] + 1) * TILE_WIDTH, (tunnel[0][0] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 
 				return;
 
 			case 2:
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[2][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 3:
-				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[3][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
+				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 			}
@@ -475,6 +475,7 @@ public class Pilot implements Runnable {
 
 		navigation.travelTo((StartXY[0]) * TILE_WIDTH, (StartXY[1]) * TILE_WIDTH, FORWARD_SPEED,
 				ROTATE_SPEED);
+		navigation.travelForward(5);
 
 	}
 
