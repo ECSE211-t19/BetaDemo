@@ -38,6 +38,8 @@ public class FinalLightLocalizer implements Runnable {
 	private EV3GyroSensor gyroSensor;
 	private Navigation navigation;
 	private Wifi wifi;
+	private float errorMargin = 100; //150
+	private float BLACK = 220;
 
 	/***
 	 * Constructor
@@ -52,7 +54,7 @@ public class FinalLightLocalizer implements Runnable {
 		this.rightMotor = rightMotor;
 		this.odoData = Odometer.getOdometer();
 		EV3ColorSensor colour_sensor = MainClass.lineSensor;
-		this.color_sample_provider = colour_sensor.getMode("ColorID");
+		this.color_sample_provider = colour_sensor.getMode("Red");
 		this.color_samples = new float[colour_sensor.sampleSize()];
 		this.TRACK = TRACK;
 		this.WHEEL_RAD = WHEEL_RAD;
@@ -89,25 +91,45 @@ public class FinalLightLocalizer implements Runnable {
 		leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
 		rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
 		
+//		
+//		prev_red = fetchUSData();
+//		
+//		while (numberLines < 4) {
+//			curr_red = fetchUSData();
+//			
+//			if ( prev_red - curr_red > 3.5) { //3.5
+//				
+//				angles[numberLines] = odoData.getXYT()[2];
+//				
+//				Sound.beep();
+//				numberLines++;
+//			}
+//			
+//			prev_red = curr_red;
+//		}
+		
+		
+		
 		
 		prev_red = fetchUSData();
 		
-		while (numberLines < 4) {
-			curr_red = fetchUSData();
-			
-			if ( prev_red - curr_red > 3.5) { //3.5
-				
-				angles[numberLines] = odoData.getXYT()[2];
-				
-				Sound.beep();
-				numberLines++;
-			}
-			
-			prev_red = curr_red;
-		}
+        while (numberLines < 4)
+        {
+        	curr_red = fetchUSData();
+        	
+        	if (prev_red - curr_red > 19 && legitDetection(10))
+        	{
+        		angles[numberLines] = odoData.getXYT()[2];
+        		Sound.beep();
+        		numberLines++;
+        	}
+        	
+        	prev_red = curr_red;
+        }
+        
+        leftMotor.stop(true);
+        rightMotor.stop(false);
 		
-		leftMotor.stop(true);
-		rightMotor.stop(false);
 		
 		// do calculations
 		double deltaX = angles[2] - angles[0];
@@ -241,21 +263,36 @@ public void doNavLocalization(double toX, double toY) {
         
         
         // detect lines
+//        prev_red = fetchUSData();
+//        
+//        while (numberLines < 4) {
+//            curr_red = fetchUSData();
+//            
+//            if ( prev_red - curr_red > 3.5) { //3.5
+//                
+//                angles[numberLines] = odoData.getXYT()[2];
+//                Sound.beep();
+//                numberLines++;
+//            }
+//            
+//            prev_red = curr_red;
+//        }
+        
+        
         prev_red = fetchUSData();
-        
-        while (numberLines < 4) {
-            curr_red = fetchUSData();
-            
-            if ( prev_red - curr_red > 3.5) { //3.5
-                
-                angles[numberLines] = odoData.getXYT()[2];
-                Sound.beep();
-                numberLines++;
-            }
-            
-            prev_red = curr_red;
+        while (numberLines < 4)
+        {
+        	curr_red = fetchUSData();
+        	
+        	if (prev_red - curr_red > 19 && legitDetection(10))
+        	{
+        		angles[numberLines] = odoData.getXYT()[2];
+        		Sound.beep();
+        		numberLines++;
+        	}
+        	
+        	prev_red = curr_red;
         }
-        
         leftMotor.stop(true);
         rightMotor.stop(false);
         
@@ -438,23 +475,6 @@ public void doNavLocalization(double toX, double toY) {
         {
             odoData.setTheta(270);
         }
-        
-        
-        // turn to face the tree
-        int[] tree = wifi.getRingSet();
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
-        
     }
 	
 	
@@ -468,8 +488,28 @@ public void doNavLocalization(double toX, double toY) {
 	public float fetchUSData() {
 		color_sample_provider.fetchSample(color_samples, 0);
 
-		return (color_samples[0] * 100);
+		return (color_samples[0] * 1000);
 
+	}
+	
+	public boolean legitDetection(int sampleCount) {
+		float sum = 0;
+		
+		for (int i = 0; i < sampleCount; i++)
+		{
+			sum += fetchUSData();
+		}
+		
+		float avg = sum / sampleCount;
+		
+		if (avg > BLACK - errorMargin  && avg < BLACK + errorMargin)
+		{
+			return true;
+		}
+		else 
+		{
+			return false;
+		}
 	}
 
 	public static int convertDistance(double radius, double distance) {

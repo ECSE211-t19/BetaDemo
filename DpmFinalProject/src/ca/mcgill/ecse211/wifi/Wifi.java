@@ -10,7 +10,7 @@ import lejos.hardware.lcd.LCD;
 public class Wifi {
 
   // ** Set these as appropriate for your team and current situation **
-  private static final String SERVER_IP = "192.168.43.232";
+  private static final String SERVER_IP = "192.168.2.2";
   private static final int TEAM_NUMBER = 19;
   private Map data; 
   private int team;
@@ -85,16 +85,16 @@ public class Wifi {
 			break;
 		case 1:
 
-			coords[0] = 7;
+			coords[0] = 14;
 			coords[1] = 1;
 			break;
 		case 2:
-			coords[0] = 7;
-			coords[1] = 7;
+			coords[0] = 14;
+			coords[1] = 8;
 			break;
 		case 3:
 			coords[0] = 1;
-			coords[1] = 7;
+			coords[1] = 8;
 			break;
 		}
 		return coords;

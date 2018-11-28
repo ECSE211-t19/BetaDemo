@@ -87,6 +87,7 @@ public class Pilot implements Runnable {
 		travelThroughTunnel();
 		Sound.beep();
 		travelToRingSet();
+		Sound.beep();
 
 		localizeBeforeRingSet();
 
@@ -275,6 +276,8 @@ public class Pilot implements Runnable {
 			}
 
 			else {
+				navigation.travelTo((tree[0]) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
+
 				navigation.travelTo((tree[0]) * TILE_WIDTH, (tree[1] - 1) * TILE_WIDTH, FORWARD_SPEED, ROTATE_SPEED);
 			}
 
