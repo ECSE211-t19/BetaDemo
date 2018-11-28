@@ -78,8 +78,8 @@ public class UltrasonicLocalizer implements Runnable {
 			this.distance = (int) (usData[0] * 100.0);
 		}
 
-		if (this.distance < 100) {
-			while (this.distance < 100) {
+		if (this.distance < 70) {
+			while (this.distance < 70) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.backward();
@@ -104,7 +104,7 @@ public class UltrasonicLocalizer implements Runnable {
 
 			angle1 = odometer.getXYT()[2];
 
-			while (this.distance < 100) {
+			while (this.distance < 70) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.forward();
@@ -148,7 +148,7 @@ public class UltrasonicLocalizer implements Runnable {
 			rightMotor.stop(false);
 			angle1 = 360 - odometer.getXYT()[2];
 
-			while (this.distance < 100) {
+			while (this.distance < 70) {
 				leftMotor.setSpeed(ROTATION_SPEED);
 				rightMotor.setSpeed(ROTATION_SPEED);
 				leftMotor.forward();

@@ -8,6 +8,7 @@ import lejos.robotics.SampleProvider;
 import sun.management.Sensor;
 import ca.mcgill.ecse211.navigation.*;
 import ca.mcgill.ecse211.odometer.*;
+import ca.mcgill.ecse211.wifi.Wifi;
 import lejos.hardware.ev3.LocalEV3;
 
 /***
@@ -23,7 +24,7 @@ public class FinalLightLocalizer implements Runnable {
 	private float light_value;
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private static final double d = 13.4; // distance between the center of the robot and the light sensor
+	private static final double d = 13.3; // distance between the center of the robot and the light sensor
 	private static final double TILE_WIDTH = 30.48;
 	private static final int ROTATE_SPEED = 110;
 	private double TRACK;
@@ -36,6 +37,7 @@ public class FinalLightLocalizer implements Runnable {
 	private float first, second, third, fourth, angleCorrection;
 	private EV3GyroSensor gyroSensor;
 	private Navigation navigation;
+	private Wifi wifi;
 
 	/***
 	 * Constructor
@@ -45,7 +47,7 @@ public class FinalLightLocalizer implements Runnable {
 	 * @throws OdometerExceptions 
 	 */
 	public FinalLightLocalizer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, double TRACK,
-			double WHEEL_RAD, EV3GyroSensor gyroSensor, Navigation navigation) throws OdometerExceptions {
+			double WHEEL_RAD, EV3GyroSensor gyroSensor, Navigation navigation, Wifi wifi) throws OdometerExceptions {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
 		this.odoData = Odometer.getOdometer();
@@ -57,6 +59,7 @@ public class FinalLightLocalizer implements Runnable {
 		this.startCorner = startCorner;
 		this.gyroSensor = gyroSensor;
 		this.navigation = navigation;
+		this.wifi = wifi;
 	}
 
 	public void run() {
@@ -114,9 +117,33 @@ public class FinalLightLocalizer implements Runnable {
 		double yZero = d * Math.cos(Math.toRadians(deltaX / 2));
 
 		
-		MainClass.navigation.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
+		navigation.travelTo(xZero, yZero, ROTATE_SPEED, ROTATE_SPEED);
 		leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
         rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
+		
+	/*	leftMotor.setSpeed(90);
+		rightMotor.setSpeed(90);
+		leftMotor.backward();
+		rightMotor.forward();
+
+		prev_red = fetchUSData();
+
+		while (numberLines < 5) {
+			curr_red = fetchUSData();
+
+			if (prev_red - curr_red > 3) { // 3.5
+
+				Sound.beep();
+				break;
+			}
+
+			prev_red = curr_red;
+		}
+
+		leftMotor.stop(true);
+		rightMotor.stop(false);
+		
+		*/
         
         
         //---------------------------------------------------------------------------------
@@ -245,30 +272,30 @@ public void doNavLocalization(double toX, double toY) {
                 
                 
                 
-//              leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), true);
-//              rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), false);
+              leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), true);
+              rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), false);
                 
-                leftMotor.setSpeed(50);
-                rightMotor.setSpeed(50);
-                leftMotor.forward();
-                rightMotor.backward();
-                
-                prev_red = fetchUSData();
-                
-                while (numberLines < 6) {
-                    curr_red = fetchUSData();
-                    
-                    if ( prev_red - curr_red > 3.5) { //3.5
-                        
-                        Sound.beep();
-                        break;
-                    }
-                    
-                    prev_red = curr_red;
-                }
-                
-                leftMotor.stop(true);
-                rightMotor.stop(false);
+//                leftMotor.setSpeed(50);
+//                rightMotor.setSpeed(50);
+//                leftMotor.forward();
+//                rightMotor.backward();
+//                
+//                prev_red = fetchUSData();
+//                
+//                while (numberLines < 6) {
+//                    curr_red = fetchUSData();
+//                    
+//                    if ( prev_red - curr_red > 3.5) { //3.5
+//                        
+//                        Sound.beep();
+//                        break;
+//                    }
+//                    
+//                    prev_red = curr_red;
+//                }
+//                
+//                leftMotor.stop(true);
+//                rightMotor.stop(false);
                 
                 break;
                 
@@ -281,30 +308,30 @@ public void doNavLocalization(double toX, double toY) {
                 
                 navigation.travelTo(currXYT[0] + xZero, currXYT[1] - yZero, ROTATE_SPEED, ROTATE_SPEED);
                 
-//              leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), true);
-//              rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), false);
+              leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), true);
+              rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(yZero / xZero)) + 90), false);
                 
-                leftMotor.setSpeed(50);
-                rightMotor.setSpeed(50);
-                leftMotor.backward();
-                rightMotor.forward();
-                
-                prev_red = fetchUSData();
-                
-                while (numberLines < 6) {
-                    curr_red = fetchUSData();
-                    
-                    if ( prev_red - curr_red > 3.5) { //3.5
-                        
-                        Sound.beep();
-                        break;
-                    }
-                    
-                    prev_red = curr_red;
-                }
-                
-                leftMotor.stop(true);
-                rightMotor.stop(false);
+//                leftMotor.setSpeed(50);
+//                rightMotor.setSpeed(50);
+//                leftMotor.backward();
+//                rightMotor.forward();
+//                
+//                prev_red = fetchUSData();
+//                
+//                while (numberLines < 6) {
+//                    curr_red = fetchUSData();
+//                    
+//                    if ( prev_red - curr_red > 3.5) { //3.5
+//                        
+//                        Sound.beep();
+//                        break;
+//                    }
+//                    
+//                    prev_red = curr_red;
+//                }
+//                
+//                leftMotor.stop(true);
+//                rightMotor.stop(false);
                 
                 break;
                 
@@ -319,30 +346,30 @@ public void doNavLocalization(double toX, double toY) {
                 
                 
                 
-//              leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
-//              rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
+              leftMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
+              rightMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
                 
-                leftMotor.setSpeed(50);
-                rightMotor.setSpeed(50);
-                leftMotor.backward();
-                rightMotor.forward();
-                
-                prev_red = fetchUSData();
-                
-                while (numberLines < 5) {
-                    curr_red = fetchUSData();
-                    
-                    if ( prev_red - curr_red > 3.5) { //3.5
-                        
-                        Sound.beep();
-                        break;
-                    }
-                    
-                    prev_red = curr_red;
-                }
-                
-                leftMotor.stop(true);
-                rightMotor.stop(false);
+//                leftMotor.setSpeed(50);
+//                rightMotor.setSpeed(50);
+//                leftMotor.backward();
+//                rightMotor.forward();
+//                
+//                prev_red = fetchUSData();
+//                
+//                while (numberLines < 5) {
+//                    curr_red = fetchUSData();
+//                    
+//                    if ( prev_red - curr_red > 3.5) { //3.5
+//                        
+//                        Sound.beep();
+//                        break;
+//                    }
+//                    
+//                    prev_red = curr_red;
+//                }
+//                
+//                leftMotor.stop(true);
+//                rightMotor.stop(false);
                 
                 break;
                 
@@ -357,30 +384,30 @@ public void doNavLocalization(double toX, double toY) {
                 
                 
                 
-//              leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
-//              rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
+              leftMotor.rotate(convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), true);
+              rightMotor.rotate(-convertAngle(WHEEL_RAD, TRACK, Math.toDegrees(Math.atan(xZero / yZero))), false);
                 
-                leftMotor.setSpeed(50);
-                rightMotor.setSpeed(50);
-                leftMotor.forward();
-                rightMotor.backward();
-                
-                prev_red = fetchUSData();
-                
-                while (numberLines < 5) {
-                    curr_red = fetchUSData();
-                    
-                    if ( prev_red - curr_red > 3.5) { //3.5
-                        
-                        Sound.beep();
-                        break;
-                    }
-                    
-                    prev_red = curr_red;
-                }
-                
-                leftMotor.stop(true);
-                rightMotor.stop(false);
+//                leftMotor.setSpeed(50);
+//                rightMotor.setSpeed(50);
+//                leftMotor.forward();
+//                rightMotor.backward();
+//                
+//                prev_red = fetchUSData();
+//                
+//                while (numberLines < 5) {
+//                    curr_red = fetchUSData();
+//                    
+//                    if ( prev_red - curr_red > 3.5) { //3.5
+//                        
+//                        Sound.beep();
+//                        break;
+//                    }
+//                    
+//                    prev_red = curr_red;
+//                }
+//                
+//                leftMotor.stop(true);
+//                rightMotor.stop(false);
                 
                 break;
                 
@@ -394,6 +421,7 @@ public void doNavLocalization(double toX, double toY) {
         odoData.setX(toX);
         odoData.setY(toY);
         
+        // set angle to closest angle in multiple of 90 degrees
         if (currXYT[2] > 315.0 || currXYT[2] < 45.0)
         {
             odoData.setTheta(0);
@@ -410,6 +438,22 @@ public void doNavLocalization(double toX, double toY) {
         {
             odoData.setTheta(270);
         }
+        
+        
+        // turn to face the tree
+        int[] tree = wifi.getRingSet();
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
     }
 	

@@ -97,8 +97,8 @@ public class ArmController {
 		rightMotor.setSpeed(FORWARD_SPEED);
 
 		//advance robot to insert arm in ring hole
-		leftMotor.rotate(convertDistance(WHEELRADIUS, 12), true); 
-		rightMotor.rotate(convertDistance(WHEELRADIUS, 12), false);
+		leftMotor.rotate(convertDistance(WHEELRADIUS, 10), true); 
+		rightMotor.rotate(convertDistance(WHEELRADIUS, 10), false);
 
 		//dont know if this will work. want to let color sensor activate before continuing robot movement 
 		try {
@@ -111,8 +111,8 @@ public class ArmController {
 		rightMotor.setSpeed(FORWARD_SPEED/3);
 		
 		//move robot back to retrieve arm
-		leftMotor.rotate(-convertDistance(WHEELRADIUS, 12), true); 
-		rightMotor.rotate(-convertDistance(WHEELRADIUS, 12), false);
+		leftMotor.rotate(-convertDistance(WHEELRADIUS, 8), true); 
+		rightMotor.rotate(-convertDistance(WHEELRADIUS, 8), false);
 
 		for (int i = 0; i < 7; i ++){
 			//detect color and beep accordingly

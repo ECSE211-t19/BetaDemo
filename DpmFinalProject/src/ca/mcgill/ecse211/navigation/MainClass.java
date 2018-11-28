@@ -34,7 +34,7 @@ public class MainClass {
 
 	private static final TextLCD lcd = LocalEV3.get().getTextLCD();
 	public static final double WHEEL_RAD = 2.07;
-	public static final double TRACK = 10.7; // 66
+	public static final double TRACK = 10.5; // 66
 	public Odometer odometer;
 	public static ArmController armController;
 	public static Navigation navigation;
@@ -54,7 +54,7 @@ public class MainClass {
 		Wifi wifi = new Wifi();
 		navigation = new Navigation(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
 		FinalLightLocalizer finalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
-				gyroSensor, navigation);
+				gyroSensor, navigation, wifi);
 		pilot = new Pilot(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi, navigation, finalLightLocalizer);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
 
@@ -63,7 +63,7 @@ public class MainClass {
 		odoThread.start();
 		Thread odoDisplayThread = new Thread(odometryDisplay);
 		odoDisplayThread.start();
-
+//gyro.reset();
 		usLocalizer.run();
 
 		finalLightLocalizer.run();

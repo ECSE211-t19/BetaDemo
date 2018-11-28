@@ -183,30 +183,25 @@ public class Pilot implements Runnable {
 			case 0:
 				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-						ROTATE_SPEED);
+				
 				return;
-
 			case 1:
 				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				/*navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-						ROTATE_SPEED);*/
+				
 
 				return;
 
 			case 2:
 				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
-						ROTATE_SPEED);
+				
 				return;
 
 			case 3:
 				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[0][0] - 1) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] + 1) * TILE_WIDTH, (tunnel[0][0] - 1) * TILE_WIDTH, FORWARD_SPEED,
-						ROTATE_SPEED);
+				
 				return;
 
 			}
@@ -220,30 +215,26 @@ public class Pilot implements Runnable {
 			case 0:
 				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[2][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-						ROTATE_SPEED);
+				
 				return;
 
 			case 1:
 				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[0][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
-						ROTATE_SPEED);
+				
 
 				return;
 
 			case 2:
 				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[2][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
-						ROTATE_SPEED);
+				
 				return;
 
 			case 3:
 				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
-				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[2][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
-						ROTATE_SPEED);
+				
 				return;
 			}
 		}
