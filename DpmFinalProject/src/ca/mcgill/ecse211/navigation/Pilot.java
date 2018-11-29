@@ -84,9 +84,15 @@ public class Pilot implements Runnable {
 		}
 
 		travelToTunnel();
-		travelThroughTunnel();
 		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+
+		travelThroughTunnel();
+		
 		travelToRingSet();
+		Sound.beep();
+		Sound.beep();
 		Sound.beep();
 
 		localizeBeforeRingSet();
@@ -103,7 +109,11 @@ public class Pilot implements Runnable {
 			switch (StartingCorner) {
 
 			case 0:
+//				navigation.travelTo((tunnel[0][0]) * TILE_WIDTH, StartXY[1] * TILE_WIDTH, FORWARD_SPEED,
+//						ROTATE_SPEED);
+//				finalLightLocalizer.doNavLocalization((tunnel[0][0]) * TILE_WIDTH, StartXY[1] * TILE_WIDTH);
 
+				
 				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, StartXY[1] * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[1][1] - 1) * TILE_WIDTH, FORWARD_SPEED,
@@ -112,6 +122,10 @@ public class Pilot implements Runnable {
 
 			case 1:
 
+//				navigation.travelTo((tunnel[1][0]) * TILE_WIDTH, StartXY[1] * TILE_WIDTH, FORWARD_SPEED,
+//						ROTATE_SPEED);
+//				finalLightLocalizer.doNavLocalization((tunnel[1][0]) * TILE_WIDTH, StartXY[1] * TILE_WIDTH);
+
 				
 				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, StartXY[1] * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
@@ -119,7 +133,11 @@ public class Pilot implements Runnable {
 						ROTATE_SPEED);
 				return;
 			case 2:
+//				navigation.travelTo((tunnel[1][0]) * TILE_WIDTH, StartXY[1] * TILE_WIDTH, FORWARD_SPEED,
+//						ROTATE_SPEED);
+//				finalLightLocalizer.doNavLocalization((tunnel[1][0]) * TILE_WIDTH, StartXY[1] * TILE_WIDTH);
 
+				
 				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, StartXY[1] * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[1][0] - 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
@@ -128,6 +146,12 @@ public class Pilot implements Runnable {
 			case 3:
 
 				LCD.drawString("ury" + tunnel[3][1], 0, 5);
+//				navigation.travelTo((tunnel[0][0]) * TILE_WIDTH, StartXY[1] * TILE_WIDTH, FORWARD_SPEED,
+//						ROTATE_SPEED);
+//				
+//				
+//				finalLightLocalizer.doNavLocalization((tunnel[0][0]) * TILE_WIDTH, StartXY[1] * TILE_WIDTH);
+//				
 				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, StartXY[1] * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[0][0] + 0.5) * TILE_WIDTH, (tunnel[3][1] + 1) * TILE_WIDTH, FORWARD_SPEED,
@@ -140,6 +164,11 @@ public class Pilot implements Runnable {
 			switch (StartingCorner) {
 
 			case 0:
+//				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[2][1]) * TILE_WIDTH, FORWARD_SPEED,
+//						ROTATE_SPEED);
+//				finalLightLocalizer.doNavLocalization((StartXY[0]) * TILE_WIDTH, (tunnel[2][1]) * TILE_WIDTH);
+
+				
 				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[2][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
@@ -147,14 +176,25 @@ public class Pilot implements Runnable {
 				return;
 
 			case 1:
+				
 
-				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
+
+//				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[0][1]) * TILE_WIDTH, FORWARD_SPEED,
+//						ROTATE_SPEED);
+//				finalLightLocalizer.doNavLocalization((StartXY[0]) * TILE_WIDTH, (tunnel[0][1]) * TILE_WIDTH);
+		navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[0][1] + 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				return;
 
 			case 2:
+				
+//				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1]) * TILE_WIDTH, FORWARD_SPEED,
+//						ROTATE_SPEED);
+//				finalLightLocalizer.doNavLocalization((StartXY[0]) * TILE_WIDTH, (tunnel[3][1]) * TILE_WIDTH);
+
+				
 				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[2][0] + 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
@@ -162,6 +202,12 @@ public class Pilot implements Runnable {
 				return;
 
 			case 3:
+				
+//				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1]) * TILE_WIDTH, FORWARD_SPEED,
+//						ROTATE_SPEED);
+//				finalLightLocalizer.doNavLocalization((StartXY[0]) * TILE_WIDTH, (tunnel[3][1]) * TILE_WIDTH);
+
+				
 				navigation.travelTo((StartXY[0]) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,
 						ROTATE_SPEED);
 				navigation.travelTo((tunnel[0][0] - 1) * TILE_WIDTH, (tunnel[3][1] - 0.5) * TILE_WIDTH, FORWARD_SPEED,

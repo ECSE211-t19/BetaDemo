@@ -67,14 +67,20 @@ public class MainClass {
 		usLocalizer.run();
 
 		finalLightLocalizer.run();
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
 		gyroSensor.reset();
-		Sound.beep();
 		pilot.run();
-		Sound.beep();
 		armController.captureRing();
 		pilot.travelBackToTunnel();
 		pilot.travelBackThroughTunnel();
 		pilot.travelBackToStartingCorner();
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
+		Sound.beep();
 
 		// }
 

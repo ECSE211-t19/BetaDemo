@@ -38,7 +38,7 @@ public class FinalLightLocalizer implements Runnable {
 	private EV3GyroSensor gyroSensor;
 	private Navigation navigation;
 	private Wifi wifi;
-	private float errorMargin = 100; //150
+	private float errorMargin = 150; //150
 	private float BLACK = 220;
 
 	/***
@@ -284,7 +284,7 @@ public void doNavLocalization(double toX, double toY) {
         {
         	curr_red = fetchUSData();
         	
-        	if (prev_red - curr_red > 19 && legitDetection(10))
+        	if (prev_red - curr_red > 15 && legitDetection(10))
         	{
         		angles[numberLines] = odoData.getXYT()[2];
         		Sound.beep();
