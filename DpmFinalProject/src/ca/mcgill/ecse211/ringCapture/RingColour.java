@@ -9,9 +9,6 @@ import lejos.robotics.SampleProvider;
 
 public class RingColour {
 
-	// private static final Port csPort = LocalEV3.get().getPort("S3"); //change to
-	// proper port
-
 	private SampleProvider ring_color_sample_provider;
 	private float[] color_samples;
 
@@ -50,7 +47,7 @@ public class RingColour {
 	}
 
 	/**
-	 * Check if colour is witing 2 std deviations from mean
+	 * Checks if the colour is within 2 standart deviations from mean
 	 * 
 	 * @param colour
 	 * @return true if detected color is within 2 std deviations
