@@ -81,10 +81,10 @@ public class LightLocalizer implements Runnable {
 		rightMotor.setSpeed(ROTATE_SPEED);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
 		rightMotor.rotate(-convertDistance(WHEEL_RAD, Math.PI * TRACK), true);
-		prev_red = fetchUSData();
+		prev_red = fetchColorData();
 
 		while (numberLines < 4) {
-			curr_red = fetchUSData();
+			curr_red = fetchColorData();
 
 			if (prev_red - curr_red > 19 && isDetectingLine(10)) {
 				angles[numberLines] = odoData.getXYT()[2];
@@ -173,9 +173,9 @@ public class LightLocalizer implements Runnable {
 			break;
 		}
 
-		prev_red = fetchUSData();
+		prev_red = fetchColorData();
 		while (numberLines < 4) {
-			curr_red = fetchUSData();
+			curr_red = fetchColorData();
 
 			if (prev_red - curr_red > 15 && isDetectingLine(10)) {
 				angles[numberLines] = odoData.getXYT()[2];
@@ -266,7 +266,7 @@ public class LightLocalizer implements Runnable {
 	 * This method fetches the US data
 	 * 
 	 */
-	public float fetchUSData() {
+	public float fetchColorData() {
 		color_sample_provider.fetchSample(color_samples, 0);
 
 		return (color_samples[0] * 1000);
@@ -284,7 +284,7 @@ public class LightLocalizer implements Runnable {
 		float sum = 0;
 
 		for (int i = 0; i < sampleCount; i++) {
-			sum += fetchUSData();
+			sum += fetchColorData();
 		}
 
 		float avg = sum / sampleCount;
