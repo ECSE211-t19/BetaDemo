@@ -1,16 +1,10 @@
 package ca.mcgill.ecse211.localization;
 
-import java.util.concurrent.TimeUnit;
-
 import ca.mcgill.ecse211.navigation.MainClass;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
 import lejos.hardware.Sound;
-import lejos.hardware.ev3.LocalEV3;
-import lejos.hardware.lcd.LCD;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.port.Port;
-import lejos.hardware.sensor.EV3UltrasonicSensor;
 import lejos.hardware.sensor.SensorModes;
 import lejos.robotics.SampleProvider;
 
@@ -39,6 +33,8 @@ public class UltrasonicLocalizer implements Runnable {
 	 * 
 	 * @param leftMotor,
 	 *            rightMotor, TRACK, WHEEL_RAD.
+	 *            
+	 * @throws OdometerExceptions
 	 */
 	public UltrasonicLocalizer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, double TRACK,
 			double WHEEL_RAD) throws OdometerExceptions {
@@ -61,8 +57,6 @@ public class UltrasonicLocalizer implements Runnable {
 
 	/***
 	 * This method starts the falling edge localization
-	 * 
-	 * 
 	 * 
 	 */
 	public void doFallingEdge() {

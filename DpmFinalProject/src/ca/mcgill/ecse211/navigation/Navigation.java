@@ -1,38 +1,22 @@
 package ca.mcgill.ecse211.navigation;
 
-import lejos.hardware.sensor.*;
-import lejos.hardware.ev3.LocalEV3;
 import lejos.hardware.motor.EV3LargeRegulatedMotor;
-import lejos.hardware.motor.EV3MediumRegulatedMotor;
-import lejos.hardware.port.Port;
-import lejos.robotics.SampleProvider;
-
-import java.util.HashMap;
-import java.util.Map;
-
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.wifi.Wifi;
-import lejos.hardware.Button;
-import lejos.hardware.Sound;
 
 /***
- * This class implements the navigation and obstacle avoidance in Lab5 on the
- * EV3 platform.
+ * This class implements the navigation.
  * 
  * @authorAbedAtassi
  * @authorHyunSuAn
  */
-public class Navigation  {
+public class Navigation {
 
 	private EV3LargeRegulatedMotor leftMotor;
 	private EV3LargeRegulatedMotor rightMotor;
-	private float[] usData;
-	private SampleProvider usDistance;
 	private final double TRACK;
 	private final double WHEEL_RAD;
 	public static final int FORWARD_SPEED = 200;
-	private static final int ROTATE_SPEED = 150;
-	private static final double TILE_WIDTH = 30.48;
 	double currentT, currentY, currentX;
 	double dx, dy, dt;
 	double distanceToTravel;
@@ -40,15 +24,16 @@ public class Navigation  {
 	private Odometer odometer;
 	private OdometerData odoData;
 
-	//
 	/***
 	 * Constructor
 	 * 
-	 * @param wifi
+	 * @param leftMotor,
+	 *            rightMotor, TRACK, WHEEL_RAD, wifi
 	 * 
 	 */
 	public Navigation(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, final double TRACK,
-			final double WHEEL_RAD, Wifi wifi) throws OdometerExceptions { // constructor
+			final double WHEEL_RAD, Wifi wifi) throws OdometerExceptions {
+
 		this.odometer = Odometer.getOdometer();
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;
@@ -57,13 +42,7 @@ public class Navigation  {
 
 		this.TRACK = TRACK;
 		this.WHEEL_RAD = WHEEL_RAD;
-
-		SensorModes usSensor = MainClass.usSensor; // usSensor is the instance
-		this.usDistance = usSensor.getMode("Distance"); // usDistance provides samples from this instance
-		this.usData = new float[usDistance.sampleSize()]; // usData is the buffer in which data are returned
-
 	}
-
 
 	/***
 	 * This makes the robot move forward
@@ -112,11 +91,9 @@ public class Navigation  {
 		leftMotor.setSpeed(forwardSpeed);
 		rightMotor.setSpeed(forwardSpeed);
 		leftMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), true);
-
 		rightMotor.rotate(convertDistance(WHEEL_RAD, distanceToTravel), false);
 
 	}
-
 
 	/***
 	 * This method makes the robot turn to the minimum specified angle
@@ -157,7 +134,6 @@ public class Navigation  {
 			return false;
 
 	}
-
 
 	/***
 	 * This method converts the specified distance to an angle
