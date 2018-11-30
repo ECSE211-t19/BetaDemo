@@ -1,6 +1,6 @@
 package ca.mcgill.ecse211.navigation;
 
-import ca.mcgill.ecse211.localization.FinalLightLocalizer;
+import ca.mcgill.ecse211.localization.LightLocalizer;
 import ca.mcgill.ecse211.odometer.Odometer;
 import ca.mcgill.ecse211.odometer.OdometerData;
 import ca.mcgill.ecse211.odometer.OdometerExceptions;
@@ -29,7 +29,7 @@ public class Pilot implements Runnable {
 	int tree[];
 	int team;
 	Navigation navigation;
-	FinalLightLocalizer finalLightLocalizer;
+	LightLocalizer finalLightLocalizer;
 
 	/***
 	 * Constructor
@@ -41,7 +41,7 @@ public class Pilot implements Runnable {
 	 * @throws OdometerExceptions
 	 */
 	public Pilot(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, final double TRACK,
-			final double WHEEL_RAD, Wifi wifi, Navigation navigation, FinalLightLocalizer finalLightLocalizer)
+			final double WHEEL_RAD, Wifi wifi, Navigation navigation, LightLocalizer finalLightLocalizer)
 			throws OdometerExceptions {
 
 		this.leftMotor = leftMotor;

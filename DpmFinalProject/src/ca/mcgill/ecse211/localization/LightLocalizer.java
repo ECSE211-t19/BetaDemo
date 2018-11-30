@@ -14,7 +14,7 @@ import ca.mcgill.ecse211.odometer.*;
  * @authorAbedAtassi
  * @authorHyunSuAn
  */
-public class FinalLightLocalizer implements Runnable {
+public class LightLocalizer implements Runnable {
 
 	private SampleProvider color_sample_provider;
 	private float[] color_samples;
@@ -41,7 +41,7 @@ public class FinalLightLocalizer implements Runnable {
 	 *            rightMotor, TRACK, WHEEL_RAD, gyroSensor, navigation and wifi
 	 * @throws OdometerExceptions
 	 */
-	public FinalLightLocalizer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, double TRACK,
+	public LightLocalizer(EV3LargeRegulatedMotor leftMotor, EV3LargeRegulatedMotor rightMotor, double TRACK,
 			double WHEEL_RAD, EV3GyroSensor gyroSensor, Navigation navigation) throws OdometerExceptions {
 		this.leftMotor = leftMotor;
 		this.rightMotor = rightMotor;

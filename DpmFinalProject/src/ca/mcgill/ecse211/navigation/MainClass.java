@@ -1,7 +1,7 @@
 // Lab2.java
 package ca.mcgill.ecse211.navigation;
 
-import ca.mcgill.ecse211.localization.FinalLightLocalizer;
+import ca.mcgill.ecse211.localization.LightLocalizer;
 import ca.mcgill.ecse211.localization.UltrasonicLocalizer;
 import ca.mcgill.ecse211.odometer.*;
 import ca.mcgill.ecse211.ringCapture.ArmController;
@@ -58,9 +58,9 @@ public class MainClass {
 
 		Wifi wifi = new Wifi();
 		navigation = new Navigation(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi);
-		FinalLightLocalizer finalLightLocalizer = new FinalLightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
+		LightLocalizer lightLocalizer = new LightLocalizer(leftMotor, rightMotor, TRACK, WHEEL_RAD,
 				gyroSensor, navigation);
-		pilot = new Pilot(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi, navigation, finalLightLocalizer);
+		pilot = new Pilot(leftMotor, rightMotor, TRACK, WHEEL_RAD, wifi, navigation, lightLocalizer);
 		armController = new ArmController(armMotor, leftMotor, rightMotor, WHEEL_RAD, TRACK);
 
 		// Start odometer and display threads
@@ -71,7 +71,7 @@ public class MainClass {
 
 		// Methods to complete the course
 		usLocalizer.run();
-		finalLightLocalizer.run();
+		lightLocalizer.run();
 		Sound.beep();
 		Sound.beep();
 		Sound.beep();
